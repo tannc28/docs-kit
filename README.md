@@ -13,7 +13,7 @@ Save this as `page.html` and open it:
 <html lang="en">
 <meta charset="utf-8">
 <title>Checkout service</title>
-<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.3.0/doc.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.3.1/doc.js"></script>
 
 <script type="text/markdown">
 # Checkout service
@@ -76,7 +76,7 @@ Each file in `components/` starts with its full attribute reference.
 
 Give the assistant this line with the task:
 
-> Write the page as one HTML file with docs-kit. Follow https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.3.0/llms-full.txt
+> Write the page as one HTML file with docs-kit. Follow https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.3.1/llms-full.txt
 
 - [`llms.txt`](llms.txt) — the short index ([llmstxt.org](https://llmstxt.org) format)
 - [`llms-full.txt`](llms-full.txt) — the page template, which tool to use for what, the rules for a good page, and
@@ -164,6 +164,7 @@ with `Docs.lib(name)`.
 
 To release: bump `VERSION`, run `bin/build-llms.py` (it writes the new version into every kit URL in the guide and
 this README), commit, push to `main`. When the checks pass, CI tags `v<VERSION>`, publishes a GitHub release and
-attaches `docs-kit-skill.zip`, and requests the files once from jsDelivr. A push that does not change `VERSION` is
+attaches `docs-kit-skill.zip`, publishes the version to npm with the `NPM_TOKEN` repository secret (with provenance),
+waits for the registry to list it, and requests the files once from jsDelivr. A push that does not change `VERSION` is
 checked but not released. Versions
 stay at 0.x while nothing depends on the kit publicly: a minor release may change markup.

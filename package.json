@@ -1,6 +1,6 @@
 {
   "name": "@tannc26/docs-kit",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "One script tag turns short Markdown or plain HTML into a finished documentation page: diagrams, charts, tables, maps, maths, terminal replays and API references. Made for people and AI assistants.",
   "keywords": [
     "documentation",

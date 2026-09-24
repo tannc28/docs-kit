@@ -14,7 +14,7 @@ Copy it exactly — the URL names a release that never changes:
 <html lang="en">
 <meta charset="utf-8">
 <title>Page title</title>
-<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.3.0/doc.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.3.1/doc.js"></script>
 
 <script type="text/markdown">
 # Page title

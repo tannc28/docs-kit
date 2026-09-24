@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      id-token: write        # npm Trusted Publishing (OIDC): no npm token is stored in the repository
+      id-token: write        # npm provenance: the package links back to this workflow run
     steps:
       - uses: actions/checkout@v7
 
@@ -77,13 +77,21 @@ jobs:
           fi
 
       - name: Publish to npm, once per version
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           version="$(cat VERSION)"
           if npm view "@tannc26/docs-kit@$version" version > /dev/null 2>&1; then
             echo "@tannc26/docs-kit@$version is already on npm." >> "$GITHUB_STEP_SUMMARY"
-          elif ! npm publish --provenance --access public; then
-            echo "npm publish failed. Enable Trusted Publishing for @tannc26/docs-kit on npmjs.com (package settings: GitHub Actions, repository tannc28/docs-kit, workflow ci.yml)." >> "$GITHUB_STEP_SUMMARY"
-            exit 1
+          else
+            npm publish --provenance --access public
+            # A new version takes minutes to reach the registry's public document (200 s on 2026-09-24), and
+            # jsDelivr caches any 404 it serves meanwhile, so the next step must not ask for files before then.
+            for i in $(seq 1 45); do
+              npm view "@tannc26/docs-kit@$version" version > /dev/null 2>&1 && break
+              sleep 20
+            done
+            echo "Published @tannc26/docs-kit@$version to npm." >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Warm jsDelivr and print the URLs
@@ -92,7 +100,9 @@ jobs:
           VERSION: ${{ steps.tag.outputs.version }}
         run: |
           base="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@${VERSION#v}"
+          # purge first: a file requested before the version existed would otherwise keep a cached 404
           for f in doc.js doc.css llms.txt llms-full.txt AGENTS.md; do
+            curl -fsS -o /dev/null "https://purge.jsdelivr.net/npm/@tannc26/docs-kit@${VERSION#v}/$f" || true
             curl -fsS --retry 6 --retry-delay 10 --retry-all-errors -o /dev/null "$base/$f"
           done
           {
