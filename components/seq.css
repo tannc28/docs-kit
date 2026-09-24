@@ -1,0 +1,10 @@
+doc-seq{display:block;margin:1.2rem 0;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);outline:none;box-shadow:var(--elev)}
+doc-seq:focus-visible{box-shadow:0 0 0 3px var(--ring)}
+.dseq-stage{overflow-x:auto;padding:.9rem;text-align:center}
+.dseq-caption{font-size:12.5px;color:var(--ink3);padding:0 .9rem .6rem;text-align:center}
+doc-seq .dseq-future{opacity:.12;transition:opacity .3s}
+doc-seq text.dseq-now{fill:var(--accent)!important;font-weight:700}
+doc-seq :is(line,path).dseq-now{stroke:var(--accent)!important;stroke-width:3px!important}
+@media print{doc-seq .dseq-future{opacity:1}}
+doc-seq svg rect.actor{rx:10px;ry:10px}
+doc-seq svg .messageText{font-weight:500}

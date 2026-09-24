@@ -1,0 +1,4 @@
+doc-diff{display:block;margin:1.2rem 0}
+doc-diff .d2h-wrapper{font-size:12.5px}
+doc-diff .d2h-file-wrapper{border-color:var(--line);border-radius:var(--radius);margin-bottom:0}
+doc-diff .d2h-file-header{font-family:var(--mono)}

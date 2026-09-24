@@ -1,0 +1,19 @@
+doc-json{display:block;margin:1rem 0;border:1px solid var(--line);border-radius:var(--radius);background:var(--code);overflow:hidden}
+.dj-bar{display:flex;gap:.35rem;padding:.4rem .6rem;border-bottom:1px solid var(--line);background:var(--panel)}
+.dj-tree{padding:.6rem .8rem;overflow-x:auto;font:13px/1.65 var(--mono)}
+/* the kit styles <details> as a card; the tree must not inherit that */
+.dj-tree details{border:0;border-radius:0;background:none;margin:0}
+.dj-tree details>summary{padding:0;font-weight:400}
+.dj-node>summary{cursor:pointer;list-style:none;white-space:nowrap}
+.dj-node>summary::-webkit-details-marker{display:none}
+.dj-node>summary::before{content:"▸";display:inline-block;width:1em;color:var(--ink3);transition:transform .15s}
+.dj-node[open]>summary::before{transform:rotate(90deg)}
+.dj-node>.dj-row,.dj-node>.dj-node{margin-left:1.2em;padding-left:.5em;border-left:1px dashed var(--line)}
+.dj-row{white-space:pre-wrap;word-break:break-word;padding-left:1em}
+.dj-key{color:var(--accent2)}
+.dj-idx{color:var(--ink3)}
+.dj-punct,.dj-muted{color:var(--ink3)}
+.dj-string{color:var(--ok)}
+.dj-number{color:var(--warn)}
+.dj-boolean{color:var(--accent)}
+.dj-null{color:var(--ink3);font-style:italic}

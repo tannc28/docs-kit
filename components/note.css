@@ -1,0 +1,37 @@
+doc-note{display:contents}
+doc-note.dn{display:block;position:absolute;inset:0;pointer-events:none;z-index:3;--dn:var(--accent2)}
+doc-note.dn-new,.dn-card.dn-new{--dn:var(--ok)}
+doc-note.dn-warn,.dn-card.dn-warn{--dn:var(--warn)}
+doc-note.dn-bad,.dn-card.dn-bad{--dn:var(--bad)}
+.dn-shape{position:absolute;inset:-7px;width:calc(100% + 14px);height:calc(100% + 14px);max-width:none;overflow:visible}
+.dn-shape path{fill:none;stroke:var(--dn);stroke-width:2px;stroke-linecap:round;stroke-linejoin:round;opacity:.5;transition:opacity .15s}
+.dn-shape path.dn-second{stroke-width:1px;opacity:.22}
+/* a page with many notes stays readable: strokes sit back until their note is open */
+doc-note.dn-on .dn-shape path{stroke-width:3px;opacity:1}
+.dn-marker{pointer-events:auto;position:absolute;min-width:1.3rem;height:1.3rem;padding:0 .3rem;border-radius:999px;border:0;background:var(--dn);color:var(--panel);
+  font:700 11px/1.3rem var(--sans);cursor:help;box-shadow:0 0 0 2px var(--panel),0 1px 4px rgba(0,0,0,.25);opacity:.92;
+  --dn-shift:calc(var(--dn-stack,0) * 1.5rem)}
+/* clean look: nothing drawn at rest; the open note outlines its target */
+doc-note.dn-clean{inset:-4px;border-radius:10px;border:2px solid transparent;transition:border-color .12s,background-color .12s}
+doc-note.dn-clean.dn-on{border-color:var(--dn);background:color-mix(in srgb,var(--dn) 7%,transparent)}
+.dn-clean .dn-at-tr{top:-.65rem;right:calc(-.65rem + var(--dn-shift))}
+.dn-clean .dn-at-tl{top:-.65rem;left:calc(-.65rem + var(--dn-shift))}
+.dn-clean .dn-at-br{bottom:-.65rem;right:calc(-.65rem + var(--dn-shift))}
+.dn-clean .dn-at-bl{bottom:-.65rem;left:calc(-.65rem + var(--dn-shift))}
+.dn-marker:focus-visible{outline:3px solid var(--dn);outline-offset:2px}
+.dn-at-tr{top:-.95rem;right:calc(-.95rem + var(--dn-shift))}
+.dn-at-tl{top:-.95rem;left:calc(-.95rem + var(--dn-shift))}
+.dn-at-br{bottom:-.95rem;right:calc(-.95rem + var(--dn-shift))}
+.dn-at-bl{bottom:-.95rem;left:calc(-.95rem + var(--dn-shift))}
+doc-note.dn-on .dn-marker{opacity:1;transform:scale(1.12)}
+.dn-card{position:fixed;z-index:60;width:min(380px,calc(100vw - 16px));background:var(--panel);color:var(--ink);border:1px solid var(--line);border-top:3px solid var(--dn,var(--accent2));
+  border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:.6rem .75rem;font:13.5px/1.5 var(--sans);text-align:left}
+.dn-card[hidden]{display:none}
+.dn-card.dn-info{--dn:var(--accent2)}
+.dn-title{display:flex;gap:.45rem;align-items:baseline;font-weight:650;margin-bottom:.25rem}
+.dn-title span{display:inline-grid;place-items:center;min-width:1.2rem;height:1.2rem;padding:0 .25rem;border-radius:999px;background:var(--dn);color:var(--panel);font:700 11px/1 var(--sans)}
+.dn-body{color:var(--ink2)}
+.dn-body code{font-size:12px}
+.dn-body ul{margin:.2rem 0;padding-left:1.1rem}
+.dn-body pre{margin:.3rem 0;padding:.4rem .5rem;background:var(--code);border-radius:6px;font:11.5px/1.45 var(--mono);white-space:pre-wrap}
+@media print{.dn-marker{box-shadow:none}}

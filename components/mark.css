@@ -1,0 +1,2 @@
+doc-mark{display:inline}
+doc-mark[type=highlight],doc-mark:not([type]){position:relative;z-index:0}

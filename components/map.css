@@ -1,0 +1,21 @@
+doc-map{display:block;margin:1.2rem 0;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);overflow:hidden;outline:none;box-shadow:var(--elev)}
+doc-map:focus-visible{box-shadow:0 0 0 3px var(--ring)}
+doc-view{display:none}
+.dmap-box{position:relative;width:100%}
+.dmap-box .maplibregl-ctrl-group{border-radius:10px;box-shadow:var(--elev)}
+.dmap-panel{border-top:1px solid var(--line);padding:.8rem 1.1rem;min-height:4.5rem}
+.dmap-panel h4{margin:.1rem 0 .3rem;font-size:14px}
+.dmap-body{font-size:14px;line-height:1.6}
+.dmap-body>:first-child{margin-top:0}
+.dmap-body>:last-child{margin-bottom:0}
+/* point markers: a dot in the feature's tone (--dmap-c) + an optional label chip */
+.dmap-pt{position:relative;display:flex;align-items:center;gap:.35rem;pointer-events:none}
+.dmap-pt i{position:relative;display:block;width:14px;height:14px;border-radius:50%;border:2.5px solid #fff;background:var(--dmap-c);box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.dmap-pt span{position:absolute;left:18px;white-space:nowrap;font:600 11.5px/1.5 var(--sans);color:#0f172a;background:rgba(255,255,255,.94);padding:0 .4rem;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.dmap-pulse i::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:2px solid var(--dmap-c);opacity:0;animation:dmap-pulse 1.8s ease-out infinite}
+@keyframes dmap-pulse{0%{transform:scale(.4);opacity:.9}100%{transform:scale(1.5);opacity:0}}
+.dmap-diamond i{width:12px;height:12px;border-radius:2px;transform:rotate(45deg)}
+.dmap-text i{display:none}
+.dmap-text span{position:static}
+@media (prefers-reduced-motion:reduce){.dmap-pulse i::after{animation:none}}
+@media print{doc-map .maplibregl-ctrl{display:none}}

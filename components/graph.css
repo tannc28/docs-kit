@@ -1,0 +1,7 @@
+doc-graph{display:block;margin:1.2rem 0;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);overflow:hidden}
+.dgraph-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;padding:.4rem .6rem;border-bottom:1px solid var(--line)}
+.dgraph-bar .sp{flex:1}
+.dgraph-legend{display:flex;flex-wrap:wrap;gap:.2rem .8rem;font-size:12px;color:var(--ink3)}
+.dgraph-legend i{display:inline-block;width:.75rem;height:.75rem;border:2px solid;border-radius:3px;margin-right:.3rem;vertical-align:-1px}
+.dgraph-box{width:100%;background:var(--bg)}
+.dgraph-note{padding:.5rem .8rem;border-top:1px solid var(--line);font-size:13.5px}

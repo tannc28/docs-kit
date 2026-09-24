@@ -1,0 +1,21 @@
+doc-scrolly{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.45fr);gap:2rem;margin:1.5rem 0;align-items:start}
+.dsc-stage{grid-column:2;grid-row:1;position:sticky;top:max(1rem,calc(50vh - 18rem));min-width:0}
+.dsc-steps{grid-column:1;grid-row:1;padding:18vh 0 40vh;min-width:0}
+doc-scrolly.dsc-left .dsc-stage{grid-column:1}
+doc-scrolly.dsc-left .dsc-steps{grid-column:2}
+doc-scrolly.dsc-left{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)}
+.dsc-step{margin:0 0 55vh;padding:1rem 1.15rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);box-shadow:var(--elev);opacity:.45;transition:opacity .35s,box-shadow .35s,border-color .35s}
+.dsc-step:last-child{margin-bottom:0}
+.dsc-step.on{opacity:1;border-color:color-mix(in srgb,var(--accent) 45%,var(--line));box-shadow:var(--shadow)}
+.dsc-step>:first-child{margin-top:0}
+.dsc-step>:last-child{margin-bottom:0}
+.dsc-stage>*{margin-top:0;margin-bottom:0}
+@media (max-width:860px){
+  /* the visual is pinned in the top half, in front; cards scroll up underneath it and trigger in the lower half */
+  doc-scrolly,doc-scrolly.dsc-left{display:block}
+  .dsc-stage{position:sticky;top:0;z-index:2;max-height:50vh;overflow:hidden;background:var(--bg);padding:.4rem 0;box-shadow:0 10px 12px -12px rgba(0,0,0,.35)}
+  .dsc-steps{position:relative;z-index:1;padding:8vh 0 45vh}
+  .dsc-step{opacity:1;margin-bottom:45vh}
+  .dsc-step:not(.on){color:var(--ink3)}
+}
+@media print{.dsc-stage{position:static}.dsc-steps{padding:0}.dsc-step{margin:0 0 1rem;opacity:1}}

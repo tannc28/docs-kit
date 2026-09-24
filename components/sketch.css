@@ -1,0 +1,3 @@
+doc-sketch{display:block;margin:1.2rem 0;color:var(--ink)}
+doc-sketch svg{display:block;max-width:100%;height:auto}
+doc-sketch svg text{font-family:"Segoe Print","Chalkboard SE","Comic Sans MS",var(--sans),cursive;fill:currentColor}

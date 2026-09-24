@@ -1,0 +1,10 @@
+doc-steps{display:block;margin:1.2rem 0;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);outline:none;box-shadow:var(--elev)}
+doc-steps:focus-visible{box-shadow:0 0 0 3px var(--ring)}
+.ds-stage{padding:1rem 1.1rem;min-height:5rem}
+.ds-step{display:none}
+.ds-step.on{display:block;animation:ds-in .35s ease}
+.ds-step>:first-child{margin-top:0}
+.ds-step>:last-child{margin-bottom:0}
+@keyframes ds-in{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.ds-step.on{animation:none}}
+@media print{.ds-step{display:block!important;margin-bottom:1rem}}

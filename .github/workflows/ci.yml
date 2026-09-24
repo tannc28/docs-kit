@@ -1,0 +1,63 @@
+# Every push and pull request: check the kit.
+# Every push to main that passes: tag v0.1.<run>, publish a GitHub release, and warm jsDelivr so the
+# kit is served at https://cdn.jsdelivr.net/gh/<owner>/docs-kit@<tag>/doc.js (one URL per release,
+# never overwritten). 0.x on purpose: nothing depends on the kit publicly yet, so any release may break.
+name: ci
+
+on:
+  push:
+    branches: ["**"]
+    paths-ignore: ["**.md"]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Kit is English-only
+        run: python3 bin/verify.py --kit
+
+      - name: Vendored libraries match their pinned sha256
+        run: python3 bin/vendor-fetch.py
+
+      - name: JavaScript parses
+        run: for f in doc.js components/*.js; do node --check "$f"; done
+
+      - name: Gallery renders every component
+        run: bash bin/gallery-check.sh
+
+  release:
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Tag and publish a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: v0.1.${{ github.run_number }}
+        run: gh release create "$VERSION" --target "$GITHUB_SHA" --title "$VERSION" --generate-notes
+
+      - name: Warm jsDelivr and print the URLs
+        env:
+          VERSION: v0.1.${{ github.run_number }}
+        run: |
+          base="https://cdn.jsdelivr.net/gh/${{ github.repository }}@${VERSION}"
+          for f in doc.css doc.js; do
+            curl -fsS --retry 6 --retry-delay 10 --retry-all-errors -o /dev/null "$base/$f"
+          done
+          {
+            echo "### Released ${VERSION}"
+            echo '```html'
+            echo "<link rel=\"stylesheet\" href=\"$base/doc.css\">"
+            echo "<script src=\"$base/doc.js\" defer></script>"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

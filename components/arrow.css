@@ -1,0 +1,13 @@
+doc-arrow{display:none}
+.darr-layer{position:absolute;left:0;top:0;z-index:30;pointer-events:none;overflow:visible}
+.darr-path{fill:none!important;stroke-width:2;stroke-linecap:round}
+.darr-tone-none{stroke:var(--ink2);fill:var(--ink2)}
+.darr-tone-ok{stroke:var(--ok);fill:var(--ok)}
+.darr-tone-warn{stroke:var(--warn);fill:var(--warn)}
+.darr-tone-bad{stroke:var(--bad);fill:var(--bad)}
+.darr-tone-info{stroke:var(--accent2);fill:var(--accent2)}
+.darr-head{stroke:none!important}
+.darr-dashed{stroke-dasharray:7 5}
+@media (prefers-reduced-motion:no-preference){.darr-flow{stroke-dasharray:7 5;animation:doc-dash 1s linear infinite}}
+.darr-label{font:600 11.5px var(--sans);fill:var(--ink);paint-order:stroke;stroke:var(--bg);stroke-width:4px;stroke-linejoin:round}
+@media print{.darr-layer{display:none}}

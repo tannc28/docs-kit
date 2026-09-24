@@ -1,0 +1,17 @@
+doc-device{display:block;margin:1.2rem auto;min-width:0}
+.device-row{display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-start;justify-content:center;margin:1.2rem 0}
+.device-row doc-device{margin:0;flex:0 1 auto}
+.ddev-fit{position:relative;margin:0 auto;max-width:100%}
+.ddev-fit>.device{position:absolute;top:0;left:0;transform-origin:0 0}
+/* the screen is a small page of its own: kit fonts and tokens, scrolls if the content is taller */
+.ddev-app,.device .device-screen.ddev-app{background:var(--bg);color:var(--ink);font:14px/1.5 var(--sans);overflow:auto;text-align:left;scrollbar-width:none}
+.ddev-app::-webkit-scrollbar{display:none}
+.ddev-caption{text-align:center;font-size:12.5px;color:var(--ink3);margin-top:.6rem}
+/* browser window: fluid width, traffic lights + URL pill */
+.ddev-browser{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel);box-shadow:var(--shadow)}
+.ddev-bar{display:flex;align-items:center;gap:.4rem;padding:.55rem .8rem;background:var(--code);border-bottom:1px solid var(--line)}
+.ddev-bar i{width:11px;height:11px;border-radius:50%;background:#ff5f57;flex:0 0 auto}
+.ddev-bar i:nth-child(2){background:#febc2e}
+.ddev-bar i:nth-child(3){background:#28c840}
+.ddev-url{flex:1;margin:0 1.5rem 0 .8rem;padding:.18rem .8rem;border-radius:8px;background:var(--panel);border:1px solid var(--line);font:12px var(--sans);color:var(--ink2);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ddev-browser .ddev-app{background:var(--panel);max-height:640px}

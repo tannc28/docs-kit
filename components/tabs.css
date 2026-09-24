@@ -1,0 +1,10 @@
+doc-tabs{display:block;position:relative;margin:1.2rem 0;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);overflow:hidden}
+.dt-list{display:flex;gap:.1rem;overflow-x:auto;padding:0 .4rem;border-bottom:1px solid var(--line);background:var(--code)}
+.dt-tab{font:inherit;font-size:13.5px;padding:.55rem .85rem;border:0;border-bottom:2px solid transparent;background:none;color:var(--ink3);cursor:pointer;white-space:nowrap}
+.dt-tab:hover{color:var(--ink)}
+.dt-tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.dt-panel{padding:.9rem 1.1rem}
+.dt-panel>:first-child{margin-top:0}
+.dt-panel>:last-child{margin-bottom:0}
+.dt-panel.dt-off{position:absolute;left:-200vw;top:0;width:100%;visibility:hidden}
+@media print{.dt-list{display:none}.dt-panel.dt-off{position:static;visibility:visible}}
