@@ -272,7 +272,7 @@
   // Third-party libraries, pinned in vendor/manifest.json (fetched by bin/vendor-fetch.py).
   // Scripts load in the listed order; `needs` load first. Upgrading a library = edit this table + the manifest.
   const LIBS = {
-    mermaid: { js: ['mermaid/11.4.1/mermaid.min.js'] },
+    mermaid: { js: ['mermaid/11.17.2/mermaid.min.js'] },
     hljs: { js: ['highlightjs/11.12.0/highlight.min.js'] },  // common languages; others load per block via hljsLang()
     echarts: { js: ['echarts/6.1.0/echarts.min.js'] },
     diff2html: { needs: ['hljs'], js: ['jsdiff/9.0.0/diff.min.js', 'diff2html/3.4.56/diff2html-ui-base.min.js'], css: ['diff2html/3.4.56/diff2html.min.css'] },
