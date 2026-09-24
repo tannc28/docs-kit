@@ -3,38 +3,43 @@
 > One script tag turns short Markdown or plain HTML into a finished, self-contained page: layout, contents sidebar,
 > light/dark theme, Mermaid diagrams, charts, sortable tables, maps, code, maths and more. No build step, no hand-drawn SVG.
 
-Load it with `<script src="https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/doc.js"></script>` (pin a release tag instead of `@main` for pages that must not change).
+Load it with `<script src="https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/doc.js"></script>` — release v0.2.0; a released URL never changes.
 
 ## Docs
 
-- [Full reference](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/llms-full.txt): the guide plus every component's attribute reference, in one file
-- [Guide](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/AGENTS.md): page templates, which tool to use for what, rules for good pages
-- [Gallery](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/gallery.html): every component running
-- [Markdown example](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/examples/markdown.html): a whole page written as one Markdown block
+- [Full reference](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/llms-full.txt): the guide plus every component's attribute reference, in one file
+- [Guide](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/AGENTS.md): page templates, which tool to use for what, rules for good pages
+- [Gallery](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/gallery.html): every component running
+- [Markdown example](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/examples/markdown.html): a whole page written as one Markdown block
 
 ## Components
 
-- [doc-arrow](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/arrow.js): a curved arrow between any two elements on the page, optionally animated
-- [doc-chart](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/chart.js): a chart from CSV and a type (bar, line, area, pie…) or from any ECharts option
-- [doc-code](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/code.js): highlighted code with file name, line numbers, marked lines and a copy button
-- [doc-compare](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/compare.js): two things side by side, or one over the other with a drag slider
-- [doc-device](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/device.js): a phone, tablet, laptop or browser frame around any screen content
-- [doc-diff](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/diff.js): a before/after diff of two texts, side by side or unified
-- [doc-figure](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/figure.js): an image or SVG with numbered pins and notes, click to zoom
-- [doc-flow](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/flow.js): a system map where a packet travels hop by hop, one step at a time
-- [doc-graph](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/graph.js): an architecture or dependency graph laid out automatically from nodes and edges
-- [doc-icon](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/icon.js): any Lucide icon by name, sized to the text
-- [doc-json](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/json.js): a collapsible JSON tree with expand, collapse and copy
-- [doc-map](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/map.js): a real interactive map from GeoJSON, with an optional camera tour
-- [doc-mark](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/mark.js): a hand-drawn highlight, underline, circle or box on a phrase
-- [doc-math](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/math.js): a LaTeX formula, inline or as a block
-- [doc-note](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/note.js): a numbered annotation badge on any element, with its note on hover or tap
-- [doc-scrolly](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/scrolly.js): scrollytelling: a pinned visual that follows the text as it scrolls
-- [doc-seq](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/seq.js): a Mermaid sequence diagram that plays message by message
-- [doc-sketch](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/sketch.js): redraws a plain SVG in a hand-drawn style
-- [doc-steps](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/steps.js): a step-by-step explanation with a stepper, player and highlights
-- [doc-table](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/table.js): a sortable table from CSV, TSV or JSON, wide ones with filter and pinned columns
-- [doc-tabs](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/tabs.js): several views in one place, one tab each
-- [doc-glossary](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/term.js): terms with a definition on hover, and a glossary of every term on the page
-- [doc-timeline](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/timeline.js): a vertical or horizontal timeline of events
-- [doc-zoom](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/components/zoom.js): pan and zoom around a large diagram or image
+- [doc-arrow](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/arrow.js): a curved arrow between any two elements on the page, optionally animated
+- [doc-cast](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/cast.js): a terminal session that replays: commands type themselves, output appears, the text stays copyable
+- [doc-chart](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/chart.js): a chart from CSV and a type (bar, line, area, pie…) or from any ECharts option
+- [doc-code](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/code.js): highlighted code with file name, line numbers, marked lines and a copy button
+- [doc-compare](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/compare.js): two things side by side, or one over the other with a drag slider
+- [doc-cron](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/cron.js): a cron expression followed by what it means in plain English
+- [doc-device](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/device.js): a phone, tablet, laptop or browser frame around any screen content
+- [doc-diff](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/diff.js): a before/after diff of two texts, side by side or unified
+- [doc-figure](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/figure.js): an image or SVG with numbered pins and notes, click to zoom
+- [doc-flow](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/flow.js): a system map where a packet travels hop by hop, one step at a time
+- [doc-graph](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/graph.js): an architecture or dependency graph laid out automatically from nodes and edges
+- [doc-icon](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/icon.js): any Lucide icon by name, sized to the text
+- [doc-json](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/json.js): a collapsible JSON tree with expand, collapse and copy
+- [doc-map](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/map.js): a real interactive map from GeoJSON, with an optional camera tour
+- [doc-mark](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/mark.js): a hand-drawn highlight, underline, circle or box on a phrase
+- [doc-math](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/math.js): a LaTeX formula, inline or as a block
+- [doc-note](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/note.js): a numbered annotation badge on any element, with its note on hover or tap
+- [doc-openapi](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/openapi.js): a full API reference (endpoints, parameters, schemas, examples) from an OpenAPI spec written inline
+- [doc-scrolly](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/scrolly.js): scrollytelling: a pinned visual that follows the text as it scrolls
+- [doc-seq](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/seq.js): a Mermaid sequence diagram that plays message by message
+- [doc-sketch](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/sketch.js): redraws a plain SVG in a hand-drawn style
+- [doc-steps](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/steps.js): a step-by-step explanation with a stepper, player and highlights
+- [doc-table](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/table.js): a sortable table from CSV, TSV or JSON, wide ones with filter and pinned columns
+- [doc-tabs](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/tabs.js): several views in one place, one tab each
+- [doc-glossary](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/term.js): terms with a definition on hover, and a glossary of every term on the page
+- [doc-timeline](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/timeline.js): a vertical or horizontal timeline of events
+- [doc-tour](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/tour.js): a guided tour: a button that walks the reader through elements of the page, spotlighting each one
+- [doc-vega](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/vega.js): a Vega-Lite chart: raw rows plus a short spec that declares aggregate, bin, filter or facet itself
+- [doc-zoom](https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/components/zoom.js): pan and zoom around a large diagram or image

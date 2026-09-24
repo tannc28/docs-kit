@@ -1,7 +1,7 @@
 # Every push and pull request: check the kit.
-# Every push to main that passes: tag v0.1.<run>, publish a GitHub release, and warm jsDelivr so the
-# kit is served at https://cdn.jsdelivr.net/gh/<owner>/docs-kit@<tag>/doc.js (one URL per release,
-# never overwritten). 0.x on purpose: nothing depends on the kit publicly yet, so any release may break.
+# A push to main that passes and carries a new VERSION: tag v<VERSION>, publish a GitHub release, and warm
+# jsDelivr so the kit is served at https://cdn.jsdelivr.net/gh/<owner>/docs-kit@v<VERSION>/doc.js (one URL per
+# release, never overwritten). 0.x on purpose: nothing depends on the kit publicly yet.
 name: ci
 
 on:
@@ -42,25 +42,37 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Tag and publish a release
+      - uses: actions/checkout@v7
+
+      - name: Tag and publish the release in VERSION, once
+        id: tag
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          VERSION: v0.1.${{ github.run_number }}
-        run: gh release create "$VERSION" --target "$GITHUB_SHA" --title "$VERSION" --generate-notes
+        run: |
+          version="v$(cat VERSION)"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if gh release view "$version" > /dev/null 2>&1; then
+            echo "released=false" >> "$GITHUB_OUTPUT"
+            echo "$version is already released; bump VERSION to publish a new one." >> "$GITHUB_STEP_SUMMARY"
+          else
+            gh release create "$version" --target "$GITHUB_SHA" --title "$version" --generate-notes
+            echo "released=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Warm jsDelivr and print the URLs
+        if: steps.tag.outputs.released == 'true'
         env:
-          VERSION: v0.1.${{ github.run_number }}
+          VERSION: ${{ steps.tag.outputs.version }}
         run: |
           base="https://cdn.jsdelivr.net/gh/${{ github.repository }}@${VERSION}"
-          for f in doc.css doc.js; do
+          for f in doc.js doc.css llms.txt llms-full.txt AGENTS.md; do
             curl -fsS --retry 6 --retry-delay 10 --retry-all-errors -o /dev/null "$base/$f"
           done
           {
             echo "### Released ${VERSION}"
             echo '```html'
-            echo "<link rel=\"stylesheet\" href=\"$base/doc.css\">"
-            echo "<script src=\"$base/doc.js\" defer></script>"
+            echo "<script src=\"$base/doc.js\"></script>"
             echo '```'
+            echo "Guide for assistants: $base/llms-full.txt"
           } >> "$GITHUB_STEP_SUMMARY"

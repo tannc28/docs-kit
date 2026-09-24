@@ -33,7 +33,7 @@
       <select><option>Last 24 hours</option><option>Last 7 days</option></select>
       <span class="badge high">high</span><span class="badge med">med</span><span class="badge low">low</span><span class="badge info">info</span><span class="badge idea">idea</span>
     </p>
-    <div class="kpis">
+    <div class="kpis" data-count>
       <div class="kpi"><div class="v">1 284</div><div class="l">orders today</div></div>
       <div class="kpi ok"><div class="v">99.2%</div><div class="l">paid on first try</div></div>
       <div class="kpi warn"><div class="v">640 ms</div><div class="l">p95 checkout</div></div>
@@ -393,9 +393,72 @@ PAID,1241
 PENDING,31
 FAILED,12
 ```
+
+Footnotes and maths work too: the error rate is $\frac{failed}{orders}$ per hour.[^src]
+
+[^src]: Illustrative numbers.
 </script>
 
-    <h2 id="errors"><span class="num">27</span>Errors show inside the page</h2>
+    <h2 id="vega"><span class="num">27</span>doc-vega — a Vega-Lite chart that aggregates raw rows itself</h2>
+    <doc-vega height="220">
+<script type="application/json">{ "mark": "bar", "encoding": { "x": { "field": "service", "type": "nominal" }, "y": { "aggregate": "mean", "field": "ms", "type": "quantitative", "title": "mean latency (ms)" }, "color": { "field": "service", "legend": null } } }</script>
+<script type="text/csv">
+service,ms
+order-service,120
+order-service,160
+payment,780
+payment,860
+email-worker,55
+</script>
+    </doc-vega>
+
+    <h2 id="cast"><span class="num">28</span>doc-cast — a terminal session that replays</h2>
+    <doc-cast title="Deploy check">
+<script type="text/plain">
+$ kubectl get pods -l app=order-service
+NAME                             READY   STATUS    RESTARTS
+order-service-7d9f8b6c5d-x2k4p   1/1     Running   0
+$ curl -s localhost:8080/health
+{"status":"UP"}
+</script>
+    </doc-cast>
+
+    <h2 id="cron"><span class="num">29</span>doc-cron — a cron expression in plain English</h2>
+    <p><doc-cron>30 9 * * 1-5</doc-cron></p>
+    <p><doc-cron tz="UTC">50 * * * *</doc-cron></p>
+
+    <h2 id="openapi"><span class="num">30</span>doc-openapi — an API reference from an inline spec</h2>
+    <doc-openapi height="520">
+<script type="text/plain">
+openapi: 3.0.3
+info: { title: Orders API, version: "1.0" }
+paths:
+  /orders:
+    post:
+      summary: Place an order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items]
+              properties:
+                items: { type: array, items: { type: string } }
+                coupon: { type: string }
+      responses:
+        "201": { description: Created }
+        "409": { description: Same idempotency key, different body }
+</script>
+    </doc-openapi>
+
+    <h2 id="tour"><span class="num">31</span>doc-tour — a guided walk through the page</h2>
+    <doc-tour>
+      <doc-stop for="#controls" title="Basics">Buttons, KPI tiles and callouts come from doc.css.</doc-stop>
+      <doc-stop for="#table" title="Tables">A table from CSV, sortable.</doc-stop>
+      <doc-stop for="#cast" title="Terminal">Commands type themselves.</doc-stop>
+    </doc-tour>
+
+    <h2 id="errors"><span class="num">32</span>Errors show inside the page</h2>
     <doc-json>{ not JSON }</doc-json>
   </main>
 </div>

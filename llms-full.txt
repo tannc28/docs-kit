@@ -2,21 +2,19 @@
 
 Instructions for any assistant (or person) asked to produce an HTML page, report, explainer, design note or
 dashboard with docs-kit. The kit turns short Markdown or plain HTML into a finished page: layout, contents sidebar,
-light/dark theme, diagrams, charts, tables, maps, code, maths. You write content; the kit draws.
+light/dark theme, diagrams, charts, tables, maps, code, maths, terminal sessions, API references. You write content;
+the kit draws.
 
-## 1. Start from one of these
+## 1. Start from this
 
-Pin a release tag (`@v0.1.N`, listed at https://github.com/tannc28/docs-kit/releases). If you do not know the latest
-tag, use `@main`: it follows the newest commit (cached up to 12 hours) and may change.
-
-**Markdown page — the shortest way, and the one to prefer:**
+Copy it exactly — the URL names a release that never changes:
 
 ```html
 <!doctype html>
 <html lang="en">
 <meta charset="utf-8">
 <title>Page title</title>
-<script src="https://cdn.jsdelivr.net/gh/tannc28/docs-kit@main/doc.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/tannc28/docs-kit@v0.2.0/doc.js"></script>
 
 <script type="text/markdown">
 # Page title
@@ -24,56 +22,67 @@ tag, use `@main`: it follows the newest commit (cached up to 12 hours) and may c
 One paragraph saying what this page is for.
 
 ## First section
+
 …
 </script>
 ```
 
-**Plain HTML page:** the same first five lines, then ordinary HTML (`<h1>`, `<h2>`, `<p>`, `<table>`, `<doc-*>` tags).
-No wrapper markup is needed: the kit builds the frame, the sidebar and the heading anchors.
+That is a complete page. Write everything inside the Markdown block; headings become the sidebar. The page can also
+be plain HTML after the `<script src>` line (`<h1>`, `<h2>`, `<p>`, `<table>`, `<doc-*>` tags) — no wrapper markup is
+needed either way. Set `lang` to the page's language.
 
 ## 2. Pick the tool by what you need to show
 
-| To show | Write (Markdown fence, or HTML) |
-|---|---|
-| A flow, architecture, sequence, state machine, ER model, Gantt plan, mind map | ` ```mermaid ` — any Mermaid diagram |
-| Numbers over time or categories | ` ```chart bar ` / `line` / `area` / `hbar` / `pie` / `donut` / `scatter`, then CSV (first column = x) |
-| Any other chart (heatmap, gauge, sankey, radar…) | ` ```chart ` with an ECharts option as JSON |
-| A data table (sortable; wide ones get filter + scrolling) | ` ```table ` or ` ```csv ` then CSV, or a normal Markdown table |
-| Code | ` ```java ` (any language) — highlighted, with a copy button |
-| A formula | ` ```math ` (LaTeX), inline `<doc-math>…</doc-math>` |
-| A warning, tip or key point | `> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`, `> [!CAUTION]` |
-| Headline numbers | `<div class="kpis"><div class="kpi"><div class="v">99.2%</div><div class="l">label</div></div></div>` |
-| Before / after | `<doc-diff>` (text), `<doc-compare>` (anything side by side, or a slider) |
-| An image or screenshot with numbered notes | `<doc-figure src="…">` + `<doc-pin x="30%" y="40%" title="…">` |
-| Notes on any element of the page | `<doc-note for="#id" title="…">` |
-| A payload | `<doc-json>` |
-| A timeline of events | `<doc-timeline>` + `<doc-event time="…" title="…">` |
-| Several views in one place | `<doc-tabs>` + `<section data-tab="…">` |
-| A system as a graph laid out automatically | `<doc-graph>` (nodes/edges JSON) |
-| A real map | `<doc-map>` (GeoJSON) |
-| A phone, tablet, laptop or browser screen | `<doc-device model="iphone-14-pro">` / `model="browser"` |
-| Icons | `<doc-icon name="database">` (any Lucide icon) |
-| A term with a definition on hover | `<doc-term def="…">term</doc-term>` + `<doc-glossary>` |
-| A hand-drawn emphasis on a phrase | `<doc-mark type="circle">…</doc-mark>` |
+Inside Markdown, most tools are a fenced block: the word after the backticks picks the tool.
 
-The full attribute reference of every component is in the "Component reference" part of `llms-full.txt`
-(generated from each component's source) and runs live in `gallery.html`.
+| To show | In Markdown | In HTML |
+|---|---|---|
+| A flow, architecture, sequence, state machine, ER model, Gantt plan, mind map, timeline, quadrant, radar, treemap… | ` ```mermaid ` + Mermaid text | `<pre class="mermaid">` |
+| Numbers by category or over time | ` ```chart bar ` (or `line`, `area`, `hbar`, `pie`, `donut`, `scatter`), then CSV; first column = x axis. Add `stack`, `title="…"` after the type | `<doc-chart type="bar">` + CSV `<script>` |
+| Any other chart: heatmap, gauge, sankey, radar, calendar… | ` ```chart ` + an ECharts option (JSON) | `<doc-chart>` |
+| A chart that aggregates, bins, filters or facets raw rows itself | ` ```vega-lite ` + a Vega-Lite spec (JSON) | `<doc-vega>` (spec, then CSV) |
+| A data table, sortable; wide ones get a filter and scrolling | a normal Markdown table, or ` ```table ` + CSV | `<doc-table>` + CSV |
+| Code | ` ```python ` (any language): highlighted, with a copy button | `<doc-code lang="…">` |
+| A terminal session that replays | ` ```terminal ` + a transcript: lines starting with `$ ` are commands, the rest is output | `<doc-cast>` |
+| A cron schedule, explained | ` ```cron ` + one expression per line | `<doc-cron>0 3 * * *</doc-cron>` |
+| An HTTP API reference | ` ```openapi ` + an OpenAPI spec (YAML or JSON) | `<doc-openapi>` |
+| A formula | `$inline$`, or `$$` … `$$` on their own lines, or ` ```math ` | `<doc-math>` |
+| A warning, tip or key point | `> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`, `> [!CAUTION]` on the first line of a quote | `<div class="callout warn">` |
+| A source or side remark | a footnote: `text[^1]`, then `[^1]: the note` | — |
+| Headline numbers | `<div class="kpis" data-count>` + `.kpi` tiles (`data-count` makes them count up) | same |
+| Before / after | `<doc-diff>` for text, `<doc-compare>` for anything side by side or as a slider | |
+| A screenshot with numbered notes | `<doc-figure src="…">` + `<doc-pin x="30%" y="40%" title="…">` | |
+| Notes on any element of the page | `<doc-note for="#id" title="…">` | |
+| A walk through the page, element by element | `<doc-tour>` + `<doc-stop for="#id" title="…">` | |
+| A payload | ` ```json ` for code, `<doc-json>` for a collapsible tree | |
+| A timeline of events | `<doc-timeline>` + `<doc-event time="…" title="…">`, or a Mermaid `timeline` | |
+| Several views in one place | `<doc-tabs>` + `<section data-tab="…">` | |
+| A system graph laid out automatically | `<doc-graph>` (nodes/edges JSON) | |
+| A real map | `<doc-map>` (GeoJSON) | |
+| A phone, tablet, laptop or browser screen | `<doc-device model="iphone-14-pro">`, `model="browser"` | |
+| Icons | `<doc-icon name="database">` (any Lucide icon) | |
+| A term with its definition on hover | `<doc-term def="…">term</doc-term>`, `<doc-glossary>` lists them all | |
+| Hand-drawn emphasis on a phrase | `<doc-mark type="circle">…</doc-mark>` | |
+
+HTML and `<doc-*>` tags work inside the Markdown block. The attribute reference of every component is the
+"Component reference" part of `llms-full.txt` (generated from each component's source); `gallery.html` runs them all.
 
 ## 3. Rules that make pages good
 
-- **Content first, Markdown first.** Markdown with fences is the least code for the most page. Raw HTML and `<doc-*>`
-  tags work inside Markdown when a fence does not fit.
-- **Never draw by hand what a tool draws.** No hand-written SVG, canvas or CSS charts: a Mermaid fence, a chart
-  fence or a component is shorter, themed, and correct in dark mode.
-- **One static figure with numbered notes beats an animation.** Number the edges (`-->|"① call"|`) or use
-  `autonumber`, then explain each number in a list under the figure. Step-through players (`doc-steps`,
-  `doc-flow`, `doc-scrolly`, `doc-seq`) are for the one flow too complex to read in a single picture.
-- **Data as data.** Put numbers in CSV (` ```chart `, ` ```table `) instead of formatting them by hand, so they stay
-  sortable, chartable and checkable. Say where each number comes from.
-- **No other CSS or JS frameworks.** The kit's tokens already cover colour, spacing, type and dark mode; extra
-  styling goes in a small `<style>` using `var(--accent)`, `var(--line)` and the other tokens.
+- **Markdown first.** It is the least code for the most page. Use HTML only where no fence fits.
+- **Never draw by hand what a tool draws.** No hand-written SVG, canvas or CSS charts: a fence or a component is
+  shorter, themed, correct in dark mode, and readable by the next person who edits the page.
+- **One static figure with numbered notes beats an animation.** Number the steps on the figure (`-->|"① call"|`, or
+  `autonumber` in a sequence diagram) and explain each number in a list under it. Step-through players
+  (`doc-steps`, `doc-flow`, `doc-scrolly`, `doc-seq`) are for the one flow too complex for a single picture.
+- **Data as data.** Put numbers in CSV (` ```chart `, ` ```table `) rather than formatting them by hand, so they
+  stay sortable and chartable. Say where every number comes from.
+- **Nothing else to load.** No other CSS or JS frameworks: the kit covers colour, spacing, type and dark mode. Extra
+  styling goes in a small `<style>` using the tokens `var(--accent)`, `var(--line)`, `var(--ink2)`…
 - **Headings are the outline.** `##` sections and `###` subsections become the sidebar; keep them short.
-- **Labels.** Control labels are English; a page in another language can relabel them with
+- **Code inside tags goes in `<script type="text/plain">`** (or a Markdown fence), never a bare `<script>`: the
+  browser would run it.
+- **Labels.** Control labels are English. A page in another language can relabel them with
   `<script type="application/json" id="doc-labels">{"toc": "…"}</script>` (keys at the top of `doc.js`).
 
 ## 4. Classes worth knowing
@@ -82,8 +91,8 @@ The full attribute reference of every component is in the "Component reference" 
 - Badge: `<span class="badge high|med|low|info|idea">…</span>`
 - Cards: `<div class="grid"><div class="card"><h4>…</h4><p>…</p></div></div>`
 - Collapsible: `<details><summary>…</summary><div class="inner">…</div></details>`
-- Muted and small text: `.muted`, `.small`; a page intro paragraph: `.lede`
-- Choices a reader should answer: `.decision` blocks and `ul.checklist`; `[data-action="export"]` copies the answers
+- Muted and small text: `.muted`, `.small`; a page intro paragraph right after the title becomes the lede
+- Questions for the reader: `.decision` blocks and `ul.checklist`; `[data-action="export"]` copies the answers
 
 ## 5. Runtime (doc.js)
 
@@ -92,7 +101,10 @@ docs-kit runtime. One tag is enough:
   <script src="https://cdn.jsdelivr.net/gh/tannc28/docs-kit@<tag>/doc.js"></script>   (in <head>, or with defer)
 It links doc.css itself when the page has not, and keeps the page hidden until the stylesheet arrives.
 Features are opt-in by markup, so a doc only writes content:
-  <doc-md> / <script type="text/markdown"> -> Markdown, rendered first (fences: mermaid, chart, table, csv, math, any code)
+  <doc-md> / <script type="text/markdown"> -> Markdown, rendered first. Fences: mermaid, chart <type>, table|csv|tsv,
+                              math, vega-lite, openapi, cast|terminal, cron, any code language. Also [^1] footnotes,
+                              $inline$ / $$block$$ maths, and GitHub alerts (> [!NOTE]) as callouts
+  .kpis[data-count]           -> KPI numbers count up when scrolled into view
   no .page/main skeleton      -> content is wrapped in main + a sidebar TOC
   main h2, h3                 -> sidebar TOC + scrollspy + anchor links (ids generated from the text when missing)
   a bare <table> in main      -> styled; more than 5 columns becomes a wide table; headers sort
@@ -119,6 +131,24 @@ doc-arrow — a curved arrow between any two elements on the page, optionally an
 Curved arrow between two elements anywhere on the page (cards, mock parts, table cells), drawn on one shared
 overlay. Redraws on resize, after diagrams render and after clicks (tabs, steps, the TOC move things).
 Hidden while either end is not visible. `flow` animates dashes toward the target.
+```
+
+### doc-cast
+
+```text
+doc-cast — a terminal session that replays: commands type themselves, output appears, the text stays copyable.
+<doc-cast [cols="80"] [rows="12"] [speed="1"] [autoplay] [loop] [title="…"]>
+  <script type="text/plain">
+    $ kubectl get pods
+    NAME                     READY   STATUS
+    api-7d9f8b6c5d-x2k4p     1/1     Running
+    $ kubectl logs api-7d9f8b6c5d-x2k4p | tail -1
+    Started in 2.1 s
+  </script>
+</doc-cast>
+Write a plain transcript: a line starting with "$ " is a command (typed out), every other line is its output.
+A real asciinema recording (asciicast v2: a JSON header line, then [time, "o", "text"] lines) plays as recorded.
+Played by asciinema-player; the recording is inline, so it works from file://. In Markdown: ```terminal or ```cast.
 ```
 
 ### doc-chart
@@ -166,6 +196,16 @@ doc-compare — two things side by side, or one over the other with a drag slide
 <doc-compare labels="Before|After" [mode="slider"] [start="50"]> <div>…A…</div> <div>…B…</div> </doc-compare>
 side (default): two labelled columns, stacked on narrow screens — code, config, text, tables.
 slider: B lies over A; drag the handle (or ← → when focused) to reveal — two same-size screens or images.
+```
+
+### doc-cron
+
+```text
+doc-cron — a cron expression followed by what it means in plain English.
+<doc-cron>30 9 * * 1-5</doc-cron>        → 30 9 * * 1-5  "At 09:30, Monday through Friday"
+<doc-cron tz="UTC">50 * * * *</doc-cron>  → adds the time zone after the sentence
+Five, six (with seconds) or seven fields, ranges, lists and step values; 24-hour clock. Translated by cronstrue.
+In Markdown: a ```cron fence with one expression per line. A malformed expression shows its error in place.
 ```
 
 ### doc-device
@@ -315,6 +355,25 @@ Without `for`, it annotates its previous element sibling. Numbers follow documen
 The target gets position:relative when it is static. Several notes on one target stack their markers.
 ```
 
+### doc-openapi
+
+```text
+doc-openapi — a full API reference (endpoints, parameters, schemas, examples) from an OpenAPI spec written inline.
+<doc-openapi [height="720"]>
+  <script type="text/plain">
+    openapi: 3.0.3
+    info: { title: Orders API, version: "1.0" }
+    paths:
+      /orders:
+        post:
+          summary: Place an order
+          responses: { "201": { description: Created } }
+  </script>
+</doc-openapi>
+The spec is YAML or JSON (OpenAPI 2 or 3), inline — nothing is fetched, so it works from file://. Rendered by
+Redoc inside a scrolling box of `height` pixels. In Markdown: ```openapi.
+```
+
 ### doc-scrolly
 
 ```text
@@ -420,6 +479,37 @@ doc-timeline — a vertical or horizontal timeline of events.
   <doc-event time="08:24" tone="ok|warn|bad|info" title="First entry">Details, HTML allowed.</doc-event>
 </doc-timeline>
 Vertical by default; events fade in as they scroll into view. `horizontal` scrolls sideways.
+```
+
+### doc-tour
+
+```text
+doc-tour — a guided tour: a button that walks the reader through elements of the page, spotlighting each one.
+<doc-tour [label="Take the tour"]>
+  <doc-stop for="#checkout-form" title="The form">Validated on blur.</doc-stop>
+  <doc-stop for=".kpis" title="Numbers">Updated every 5 minutes.</doc-stop>
+</doc-tour>
+Each <doc-stop> points at any element by CSS selector — a mock screen, a table, a diagram, a card — and its body
+(HTML) is the note shown next to it. Next/Previous/Close, keyboard arrows and Esc work. Driven by driver.js.
+```
+
+### doc-vega
+
+```text
+doc-vega — a Vega-Lite chart: raw rows plus a short spec that declares aggregate, bin, filter or facet itself.
+<doc-vega [height="320"]>
+  <script type="application/json">{
+    "mark": "bar",
+    "encoding": { "x": { "field": "service" }, "y": { "aggregate": "mean", "field": "ms" } }
+  }</script>
+  <script type="text/csv">service,ms
+    api,120
+    api,140
+    worker,60</script>
+</doc-vega>
+The first <script> is the Vega-Lite spec (https://vega.github.io/vega-lite/docs/). When the spec has no `data`,
+the rows come from a second <script type="text/csv|text/tab-separated-values|application/json"> or from src="id".
+Colours and fonts follow the kit tokens and the page theme; the chart fills the width. In Markdown: ```vega-lite.
 ```
 
 ### doc-zoom

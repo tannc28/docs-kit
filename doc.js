@@ -2,7 +2,10 @@
      <script src="https://cdn.jsdelivr.net/gh/tannc28/docs-kit@<tag>/doc.js"></script>   (in <head>, or with defer)
    It links doc.css itself when the page has not, and keeps the page hidden until the stylesheet arrives.
    Features are opt-in by markup, so a doc only writes content:
-     <doc-md> / <script type="text/markdown"> -> Markdown, rendered first (fences: mermaid, chart, table, csv, math, any code)
+     <doc-md> / <script type="text/markdown"> -> Markdown, rendered first. Fences: mermaid, chart <type>, table|csv|tsv,
+                                 math, vega-lite, openapi, cast|terminal, cron, any code language. Also [^1] footnotes,
+                                 $inline$ / $$block$$ maths, and GitHub alerts (> [!NOTE]) as callouts
+     .kpis[data-count]           -> KPI numbers count up when scrolled into view
      no .page/main skeleton      -> content is wrapped in main + a sidebar TOC
      main h2, h3                 -> sidebar TOC + scrollspy + anchor links (ids generated from the text when missing)
      a bare <table> in main      -> styled; more than 5 columns becomes a wide table; headers sort
@@ -42,6 +45,7 @@
   // Values are plain strings; {name} placeholders are filled from the vars passed to Docs.t(). ----------
   const LABELS = {
     toc: 'Contents', themeButton: 'Theme', printButton: 'Print',
+    tour: 'Take the tour', done: 'Done',
     'alert.note': 'Note', 'alert.tip': 'Tip', 'alert.important': 'Important', 'alert.warning': 'Warning', 'alert.caution': 'Caution',
     play: 'Play', pause: 'Pause', prev: 'Previous step', next: 'Next step', all: 'All steps',
     step: 'Step {n}', steps: '{n} steps', stepOf: '{i} / {n}', seqIdle: '{n} steps · press play to walk through',
@@ -288,6 +292,15 @@
     notation: { js: ['rough-notation/0.5.1/rough-notation.iife.js'] },
     marked: { js: ['marked/18.0.14/marked.umd.js'] },
     papaparse: { js: ['papaparse/5.7.0/papaparse.min.js'] },
+    footnote: { js: ['marked-footnote/1.4.0/marked-footnote.umd.js'] },
+    mdmath: { needs: ['katex'], js: ['marked-katex-extension/5.1.13/marked-katex-extension.umd.js'] },
+    yaml: { js: ['js-yaml/5.4.2/js-yaml.umd.min.js'] },
+    redoc: { js: ['redoc/2.5.4/redoc.standalone.js'] },
+    cast: { js: ['asciinema-player/3.17.0/asciinema-player.min.js'], css: ['asciinema-player/3.17.0/asciinema-player.css'] },
+    cron: { js: ['cronstrue/3.27.0/cronstrue.min.js'] },
+    tour: { js: ['driver.js/1.8.0/driver.js.iife.js'], css: ['driver.js/1.8.0/driver.css'] },
+    countup: { js: ['countup.js/2.10.1/countUp.umd.js'] },
+    vega: { js: ['vega/6.4.0/vega.min.js', 'vega-lite/6.4.3/vega-lite.min.js', 'vega-embed/7.3.0/vega-embed.min.js'] },
   };
   const libReady = new Map();
   function lib(name) {
@@ -355,7 +368,7 @@
     'doc-code': 'code', 'doc-chart': 'chart', 'doc-diff': 'diff', 'doc-graph': 'graph', 'doc-icon': 'icon',
     'doc-math': 'math', 'doc-zoom': 'zoom', 'doc-sketch': 'sketch', 'doc-arrow': 'arrow',
     'doc-note': 'note', 'doc-flow': 'flow', 'doc-map': 'map', 'doc-device': 'device', 'doc-scrolly': 'scrolly', 'doc-mark': 'mark',
-    'doc-table': 'table',
+    'doc-table': 'table', 'doc-vega': 'vega', 'doc-openapi': 'openapi', 'doc-cast': 'cast', 'doc-cron': 'cron', 'doc-tour': 'tour',
   };
   function loadComponents() {
     const files = new Set(Object.entries(COMPONENTS).filter(([tag]) => $(tag)).map(([, file]) => file));
@@ -609,6 +622,28 @@
     });
   }
 
+  // <div class="kpis" data-count>: each tile's number counts up from 0 when it scrolls into view. Prefix, suffix,
+  // thousands separator and decimals are read from the text, so "1 284", "99.2%" and "640 ms" all work.
+  async function countUp() {
+    const tiles = $$('.kpis[data-count] .kpi .v');
+    if (!tiles.length || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    try { await lib('countup'); } catch { return; }
+    tiles.forEach(el => {
+      const m = el.textContent.trim().match(/^(\D*?)(\d(?:[\d\s,.]*\d)?)(.*)$/);   // the number ends on a digit, so "640 ms" keeps " ms"
+      if (!m) return;
+      const [, prefix, digits, suffix] = m;
+      const sep = /\d[ ,]\d{3}/.test(digits) ? (digits.match(/\d([ ,])\d{3}/) || [])[1] || '' : '';
+      const clean = sep ? digits.split(sep).join('') : digits;
+      const value = parseFloat(clean.replace(',', '.'));
+      if (!Number.isFinite(value)) return;
+      const decimalPlaces = (clean.split(/[.,]/)[1] || '').length;
+      const final = el.textContent;
+      new window.countUp.CountUp(el, value, { prefix, suffix, separator: sep, decimalPlaces, enableScrollSpy: true, scrollSpyOnce: true }).start();
+      // a page printed (or captured) before the tile scrolled into view must still show the real number
+      addEventListener('beforeprint', () => { el.textContent = final; });
+    });
+  }
+
   // Re-run the table behaviours on content a component added after start-up.
   function enhance(root) {
     wrapTables(root); sortableTables(root); wideTables(root);
@@ -689,6 +724,10 @@
       return bare ? `<doc-chart type="${esc(bare)}"${attrs}><script type="text/csv">${scriptText(text)}</script></doc-chart>`
         : `<doc-chart${attrs}><script type="application/json">${scriptText(text)}</script></doc-chart>`;
     }
+    if (kind === 'vega-lite' || kind === 'vega') return `<doc-vega${attrs}><script type="application/json">${scriptText(text)}</script></doc-vega>`;
+    if (kind === 'openapi') return `<doc-openapi${attrs}><script type="text/plain">${scriptText(text)}</script></doc-openapi>`;
+    if (kind === 'cast' || kind === 'terminal') return `<doc-cast${attrs}><script type="text/plain">${scriptText(text)}</script></doc-cast>`;
+    if (kind === 'cron') return text.split('\n').filter(l => l.trim()).map(l => `<p><doc-cron>${esc(l.trim())}</doc-cron></p>`).join('');
     if (kind === 'table' || kind === 'csv' || kind === 'tsv') {
       return `<doc-table${attrs}><script type="${kind === 'tsv' ? 'text/tab-separated-values' : 'text/csv'}">${scriptText(text)}</script></doc-table>`;
     }
@@ -717,6 +756,10 @@
     if (!blocks.length) return;
     try { await lib('marked'); } catch (e) { blocks.forEach(b => b.replaceWith(Object.assign(document.createElement('div'), { className: 'doc-error', textContent: `markdown: ${e.message}` }))); return; }
     const md = new marked.Marked({ gfm: true, renderer: { code: fence } });
+    // extensions load only when the source uses them: footnotes [^1], and $math$ / $$math$$ with KaTeX
+    const all = blocks.map(el => el.textContent).join('\n');
+    if (/\[\^[^\]]+\]/.test(all)) { await lib('footnote'); md.use(markedFootnote()); }
+    if (/\$[^\s$]/.test(all)) { await lib('mdmath'); md.use(markedKatex({ throwOnError: false, nonStandard: false })); }
     // A markdown <script> written right after the kit tag is parsed into <head>; its output belongs at the start of <body>.
     const bodyStart = document.body.firstChild;
     for (const el of blocks) {
@@ -734,7 +777,7 @@
   async function init() {
     await renderMarkdown();
     autoLayout(); wrapTables();
-    buildToc(); sortableTables(); filters(); wideTables(); persistence(); actions(); reveal(); loadComponents(); loadMermaid();
+    buildToc(); sortableTables(); filters(); wideTables(); persistence(); actions(); reveal(); loadComponents(); loadMermaid(); countUp();
     $$('input[type=range]').forEach(rangeFill);
     document.addEventListener('input', e => { if (e.target.matches?.('input[type=range]')) rangeFill(e.target); });
     window.Docs.ready = true;

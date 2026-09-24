@@ -483,6 +483,215 @@
           "sha256": "99aa68e4b42758b09828a46515f70369e5463458ab7a990189f641af2b8d9b4e"
         }
       ]
+    },
+    {
+      "name": "marked-footnote",
+      "version": "1.4.0",
+      "license": "MIT",
+      "purpose": "footnotes [^1] in Markdown",
+      "files": [
+        {
+          "url": "https://cdn.jsdelivr.net/npm/marked-footnote@1.4.0/dist/index.umd.js",
+          "to": "marked-footnote.umd.js",
+          "sha256": "3ff8fd955edbe6a76eaae32ec8628caf29dbb103cfe6743654090153b833dcec"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/bent10/marked-extensions@d2660051011e6956feb4c4f2fe5dffccfcf440cd/license",
+          "to": "LICENSE",
+          "sha256": "9359f7399b808813111a91c5d28656d5843d8f6d337168541938286dbf273a32"
+        }
+      ],
+      "license_note": "The npm package ships no license file; this is the monorepo license at a pinned commit."
+    },
+    {
+      "name": "marked-katex-extension",
+      "version": "5.1.13",
+      "license": "MIT",
+      "purpose": "inline and block $math$ in Markdown (uses the vendored KaTeX)",
+      "files": [
+        {
+          "url": "https://cdn.jsdelivr.net/npm/marked-katex-extension@5.1.13/lib/index.umd.js",
+          "to": "marked-katex-extension.umd.js",
+          "sha256": "d28345b2496925fd50021c6b1138252de766704819a333b08120b368ca7ba7a2"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/marked-katex-extension@5.1.13/LICENSE",
+          "to": "LICENSE",
+          "sha256": "a846b93fda6af8008a89d1394d827afc60d62eebb70c68efbfeeafe0b01928ed"
+        }
+      ]
+    },
+    {
+      "name": "js-yaml",
+      "version": "5.4.2",
+      "license": "MIT",
+      "purpose": "YAML parsing (OpenAPI specs, data)",
+      "files": [
+        {
+          "url": "https://cdn.jsdelivr.net/npm/js-yaml@5.4.2/dist/browser/js-yaml.umd.min.js",
+          "to": "js-yaml.umd.min.js",
+          "sha256": "774fe802006763599e1faadd17d562ff781bb7849b66a42ac745f227d4833f02"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/js-yaml@5.4.2/LICENSE",
+          "to": "LICENSE",
+          "sha256": "a07bc24468b9654ce76a547d47a2db282d07733b715db4c73a98bd63961f9550"
+        }
+      ]
+    },
+    {
+      "name": "redoc",
+      "version": "2.5.4",
+      "license": "MIT",
+      "purpose": "OpenAPI reference (doc-openapi)",
+      "files": [
+        {
+          "url": "https://cdn.jsdelivr.net/npm/redoc@2.5.4/bundles/redoc.standalone.js",
+          "to": "redoc.standalone.js",
+          "sha256": "dcaf76612bc4a3fbcc923a8966dee2f6146a5f32e5ce1b6f02dd60cbbf89500b"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/redoc@2.5.4/LICENSE",
+          "to": "LICENSE",
+          "sha256": "d3026d549cf68ab7355bcfa85877bf8f845b3334a7efbfdc63936432fb34ff0e"
+        }
+      ]
+    },
+    {
+      "name": "asciinema-player",
+      "version": "3.17.0",
+      "license": "Apache-2.0",
+      "purpose": "replayable terminal sessions (doc-cast)",
+      "files": [
+        {
+          "url": "https://cdn.jsdelivr.net/npm/asciinema-player@3.17.0/dist/bundle/asciinema-player.min.js",
+          "to": "asciinema-player.min.js",
+          "sha256": "a13c37632e1b5c49fe9128417b9319a9b5bc64cb457dd5ae52cbba8a3aceb880"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/asciinema-player@3.17.0/dist/bundle/asciinema-player.css",
+          "to": "asciinema-player.css",
+          "sha256": "f619fe17597043564f03b2c6918b3daf890ee8b912fb408542fba11afade4fdb"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/asciinema-player@3.17.0/LICENSE",
+          "to": "LICENSE",
+          "sha256": "63422284ed65be54ab38d8a94e7518d27e222fbb26c9ae4cd984c63926e91c12"
+        }
+      ]
+    },
+    {
+      "name": "cronstrue",
+      "version": "3.27.0",
+      "license": "MIT",
+      "purpose": "cron expression to English (doc-cron)",
+      "files": [
+        {
+          "url": "https://cdn.jsdelivr.net/npm/cronstrue@3.27.0/dist/cronstrue.min.js",
+          "to": "cronstrue.min.js",
+          "sha256": "d5be82e9e750b701a64c281a0b2b37fad63bab6ce49c84860e6605ac085b80da"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/cronstrue@3.27.0/LICENSE",
+          "to": "LICENSE",
+          "sha256": "80b0695c69ed300a023a560fe3d342e82d7015d0dde6a05c709bfdc072edfab2"
+        }
+      ]
+    },
+    {
+      "name": "driver.js",
+      "version": "1.8.0",
+      "license": "MIT",
+      "purpose": "guided tour over page elements (doc-tour)",
+      "files": [
+        {
+          "url": "https://cdn.jsdelivr.net/npm/driver.js@1.8.0/dist/driver.js.iife.js",
+          "to": "driver.js.iife.js",
+          "sha256": "c6ade0b831c6c043daf480861208cd2fa45ea4aac581cc8bb8e234281c011ddf"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/driver.js@1.8.0/dist/driver.css",
+          "to": "driver.css",
+          "sha256": "d095d440021fcf133ad46d37f18a2745fb76440f14f5208d17e203c039f765c9"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/driver.js@1.8.0/license",
+          "to": "LICENSE",
+          "sha256": "ec3ce3a08736fefd6a03a6d5b52b0705e6919fe06de9d7bd3fb63dcfb492d76d"
+        }
+      ]
+    },
+    {
+      "name": "countup.js",
+      "version": "2.10.1",
+      "license": "MIT",
+      "purpose": "KPI numbers that count up (.kpis[data-count])",
+      "files": [
+        {
+          "url": "https://cdn.jsdelivr.net/npm/countup.js@2.10.1/dist/countUp.umd.js",
+          "to": "countUp.umd.js",
+          "sha256": "2b08353ed1cd319ac41a79d74cd5508855ce33fd14d981997196b7b418cb4225"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/countup.js@2.10.1/LICENSE.md",
+          "to": "LICENSE.md",
+          "sha256": "86c5794e2eb553f1abcbc5eaf3cc7c28318d58e3d7cbbfd0da8c5dc3c20ece6c"
+        }
+      ]
+    },
+    {
+      "name": "vega",
+      "version": "6.4.0",
+      "license": "BSD-3-Clause",
+      "purpose": "Vega runtime (doc-vega)",
+      "files": [
+        {
+          "url": "https://cdn.jsdelivr.net/npm/vega@6.4.0/build/vega.min.js",
+          "to": "vega.min.js",
+          "sha256": "8f6a3587cf8d4f42c7e08120e3eb05d067e746d554e39d2dcf52acc0bd5ba28f"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/vega@6.4.0/LICENSE",
+          "to": "LICENSE",
+          "sha256": "63727832aaf62004a2b249c933e327f3c90caf49e41a72f4bf436edf632cbda8"
+        }
+      ]
+    },
+    {
+      "name": "vega-lite",
+      "version": "6.4.3",
+      "license": "BSD-3-Clause",
+      "purpose": "Vega-Lite compiler (doc-vega)",
+      "files": [
+        {
+          "url": "https://cdn.jsdelivr.net/npm/vega-lite@6.4.3/build/vega-lite.min.js",
+          "to": "vega-lite.min.js",
+          "sha256": "35a9821df838825b05a6a73e9414b58747a1b18321583858ed903c66393a5c7e"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/vega-lite@6.4.3/LICENSE",
+          "to": "LICENSE",
+          "sha256": "f618900fd0d64046963b29f40590cdd1e341a2f41449f99110d82fd81fea808c"
+        }
+      ]
+    },
+    {
+      "name": "vega-embed",
+      "version": "7.3.0",
+      "license": "BSD-3-Clause",
+      "purpose": "Vega embedding (doc-vega)",
+      "files": [
+        {
+          "url": "https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js",
+          "to": "vega-embed.min.js",
+          "sha256": "b1455caba2fb1a72fb46025ba0ba1316e2dbc7f0dd40a3f6040172bf9c08ba91"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/LICENSE",
+          "to": "LICENSE",
+          "sha256": "32df67148f0fc3db0eb9e263a7b75d07f1eb14c61955005a4a39c6918d10d137"
+        }
+      ]
     }
   ]
 }

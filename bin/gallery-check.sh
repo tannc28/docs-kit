@@ -27,6 +27,13 @@ need gallery "$(count 'class="df-node')" 1 "doc-flow drew no nodes"
 need gallery "$(count 'maplibregl-canvas"')" 1 "doc-map created no MapLibre canvas"
 need gallery "$(count '<doc-table[^>]*><div class="[a-z]*"><table')" 1 "doc-table rendered no table"
 need gallery "$(count 'class="doc-md"')" 1 "the Markdown block was not rendered"
+need gallery "$(count 'class="marks"')" 1 "doc-vega drew no chart"
+need gallery "$(count 'ap-player')" 1 "doc-cast created no player"
+need gallery "$(count 'class="dcron-say"')" 2 "doc-cron explained fewer than 2 expressions"
+need gallery "$(count 'Place an order')" 1 "doc-openapi rendered no operation"
+need gallery "$(count '<doc-tour><button')" 1 "doc-tour has no button"
+need gallery "$(count 'class="katex')" 1 "Markdown maths did not render"
+need gallery "$(count 'footnote')" 1 "Markdown footnotes did not render"
 
 for page in "$KIT"/examples/*.html; do
   render "$page"

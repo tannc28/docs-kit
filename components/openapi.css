@@ -1,0 +1,3 @@
+doc-openapi{display:block;margin:1.2rem 0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--elev)}
+/* Redoc draws a light page of its own; keep it light in dark mode rather than half-themed */
+.dapi-box{overflow:auto;background:#fff;color:#1f2937;color-scheme:light;transform:translateZ(0)}  /* transform keeps Redoc's position:fixed parts inside the box */
