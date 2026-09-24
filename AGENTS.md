@@ -14,7 +14,7 @@ Copy it exactly — the URL names a release that never changes:
 <html lang="en">
 <meta charset="utf-8">
 <title>Page title</title>
-<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.3.1/doc.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.4.0/doc.js"></script>
 
 <script type="text/markdown">
 # Page title
@@ -82,6 +82,9 @@ HTML and `<doc-*>` tags work inside the Markdown block. The attribute reference 
 - **Headings are the outline.** `##` sections and `###` subsections become the sidebar; keep them short.
 - **Code inside tags goes in `<script type="text/plain">`** (or a Markdown fence), never a bare `<script>`: the
   browser would run it.
+- **Long pages cost nothing extra.** Diagrams, charts, maps and other heavy components load when the reader scrolls
+  near them, so there is no need to split a page for speed. For a screenshot, a PDF or a headless check, open the page
+  with `?eager` in the URL (or put `data-eager` on `<html>`) to load everything at once; the Print button does this itself.
 - **Labels.** Control labels are English. A page in another language can relabel them with
   `<script type="application/json" id="doc-labels">{"toc": "…"}</script>` (keys at the top of `doc.js`).
 

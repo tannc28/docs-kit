@@ -1,6 +1,6 @@
 {
   "name": "docs-kit",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "displayName": "docs-kit",
   "description": "Write documentation pages, reports and explainers as one HTML file with the docs-kit CDN: Markdown in, diagrams, charts, sortable tables, maps, terminal replays and API references out.",
   "author": {

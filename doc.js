@@ -17,7 +17,8 @@
      [data-action="reset"|"theme"|"print"]
      [data-reveal="delayMs"]      -> fades in when scrolled into view
      <doc-*> custom elements      -> components/<name>.js + .css loaded only when the tag is on the page
-   Components use window.Docs: { shared, esc, toast, fail, loadScript, loadCss, lib, rows, enhance, mermaid, theme, t, icon,
+   Heavy components and Mermaid load when they come near the viewport, after the first paint; ?eager (or
+   <html data-eager>) loads everything at once. Components use window.Docs: { shared, esc, toast, fail, loadScript, loadCss, lib, rows, enhance, mermaid, theme, t, icon,
    button, player, stepper }. A doc's own <script> that needs Docs runs on the 'docs:ready' event (or at once when
    Docs.ready is true). Every visible string goes through Docs.t(key) — English defaults, overridable per doc via #doc-labels.
 */
@@ -349,16 +350,95 @@
     return mermaidReady;
   }
 
-  function loadMermaid() {
+  // ---------- loading strategy ----------
+  // Heavy libraries are the cost of a page (Mermaid alone is ~900 KB over the network), so:
+  //   1. what is in the viewport loads first and gets the whole connection; what is within one more screen loads
+  //      once that is done, before the reader gets there; the rest waits until it comes near. Content in a closed
+  //      <details> or an inactive tab loads when it is shown
+  //   2. nothing heavy starts before the page has painted once, so the text never waits for a library
+  //   3. a component's own file and the libraries it needs are fetched together, not one after the other
+  // ?eager in the URL, or <html data-eager>, loads everything at once (screenshots, CI, printing).
+  const EAGER = /[?&#]eager\b/.test(location.search + location.hash) || document.documentElement.hasAttribute('data-eager');
+
+  // Resolves after the first paint with the stylesheet in place (a background tab never paints: 1.5 s at most).
+  const afterPaint = () => new Promise(resolve => {
+    setTimeout(resolve, 1500);
+    const painted = () => requestAnimationFrame(() => setTimeout(resolve, 0));
+    const wait = () => (document.documentElement.classList.contains('docs-css-wait') ? setTimeout(wait, 30) : painted());
+    wait();
+  });
+
+  // Runs each element's load job once: at once when it enters the viewport, or — when it is only within one more
+  // screen — as soon as nothing started from the viewport is still downloading.
+  const inflight = new Set(), queued = [], jobs = new Map();
+  function run(el) {
+    const job = jobs.get(el);
+    if (!job) return;
+    jobs.delete(el);
+    const p = Promise.resolve().then(job).catch(() => {});
+    inflight.add(p);
+    p.finally(() => { inflight.delete(p); if (!inflight.size) flush(); });
+  }
+  function flush() {
+    queued.splice(0).forEach(run);
+    if (!inflight.size) idlePrefetch();
+  }
+
+  // Once nothing the reader can see is still loading, download (without running) the files of everything further
+  // down at the browser's lowest priority, so scrolling there only costs the run. Skipped under Save-Data or on 2G.
+  const urlsOf = name => {
+    const spec = LIBS[name];
+    return spec ? [...(spec.needs || []).flatMap(urlsOf), ...(spec.js || []), ...(spec.css || [])].map(f => (f.startsWith('http') ? f : `${SHARED}/vendor/${f}`)) : [];
+  };
+  let prefetched = false;
+  function idlePrefetch() {
+    const c = navigator.connection;
+    if (prefetched || EAGER || !jobs.size || c?.saveData || /2g/.test(c?.effectiveType || '')) return;
+    prefetched = true;
+    const idle = window.requestIdleCallback || (f => setTimeout(f, 200));
+    idle(() => {
+      const urls = new Set();
+      for (const el of jobs.keys()) {
+        if (el.matches('pre.mermaid')) { urlsOf('mermaid').forEach(u => urls.add(u)); continue; }
+        const file = COMPONENTS[el.tagName.toLowerCase()];
+        if (!file || startedFiles.has(file)) continue;
+        urls.add(`${SHARED}/components/${file}.js`);
+        urls.add(`${SHARED}/components/${file}.css`);
+        needsOf(el).filter(n => !startedLibs.has(n)).forEach(n => urlsOf(n).forEach(u => urls.add(u)));
+      }
+      urls.forEach(href => { if (!assets.has(href)) document.head.append(Object.assign(document.createElement('link'), { rel: 'prefetch', href })); });
+    });
+  }
+  let viewIO, nearIO;
+  function schedule(el, job) {
+    jobs.set(el, job);
+    if (EAGER) return run(el);
+    viewIO ||= new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { viewIO.unobserve(e.target); nearIO.unobserve(e.target); run(e.target); } }));
+    nearIO ||= new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return;
+      nearIO.unobserve(e.target);
+      if (inflight.size) queued.push(e.target); else run(e.target);
+    }), { rootMargin: '100% 0px' });
+    viewIO.observe(el);
+    nearIO.observe(el);
+  }
+
+  let mermaidQueue = Promise.resolve();
+  function drawMermaid(nodes) {
+    mermaidQueue = mermaidQueue.then(() => mermaidLib()).then(m => m.run({ nodes })).then(() => {
+      nodes.forEach(b => b.hasAttribute('data-flow') && b.classList.add('flow'));
+      document.dispatchEvent(new Event('docs:rendered'));
+    }).catch(e => {
+      nodes.forEach(b => b.setAttribute('data-processed', 'error'));  // show the source again rather than an empty box
+      console.error('[docs] mermaid', e);
+    });
+    return mermaidQueue;
+  }
+  async function loadMermaid() {
     const blocks = $$('pre.mermaid');
     if (!blocks.length) return;
-    mermaidLib()
-      .then(m => m.run({ nodes: blocks }))
-      .then(() => {
-        blocks.forEach(b => b.hasAttribute('data-flow') && b.classList.add('flow'));
-        document.dispatchEvent(new Event('docs:rendered'));
-      })
-      .catch(e => console.error('[docs] mermaid', e));
+    await afterPaint();
+    blocks.forEach(b => schedule(b, () => drawMermaid([b])));
   }
 
   // tag -> components/<file>.js + .css; a component file may define several tags
@@ -370,12 +450,47 @@
     'doc-note': 'note', 'doc-flow': 'flow', 'doc-map': 'map', 'doc-device': 'device', 'doc-scrolly': 'scrolly', 'doc-mark': 'mark',
     'doc-table': 'table', 'doc-vega': 'vega', 'doc-openapi': 'openapi', 'doc-cast': 'cast', 'doc-cron': 'cron', 'doc-tour': 'tour',
   };
-  function loadComponents() {
-    const files = new Set(Object.entries(COMPONENTS).filter(([tag]) => $(tag)).map(([, file]) => file));
-    files.forEach(f => {
-      loadCss(`${SHARED}/components/${f}.css`);
-      loadScript(`${SHARED}/components/${f}.js`).catch(e => console.error('[docs]', e.message));
-    });
+  // Libraries a component needs, started together with the component's own file.
+  const NEEDS = {
+    'doc-seq': ['mermaid'], 'doc-code': ['hljs'], 'doc-chart': ['echarts'], 'doc-diff': ['diff2html'], 'doc-graph': ['cytoscape'],
+    'doc-icon': ['lucide'], 'doc-math': ['katex'], 'doc-zoom': ['panzoom'], 'doc-sketch': ['rough'], 'doc-map': ['maplibre', 'turf'],
+    'doc-device': ['devices'], 'doc-scrolly': ['scrollama'], 'doc-mark': ['notation'], 'doc-table': ['papaparse'],
+    'doc-vega': ['vega'], 'doc-openapi': ['redoc'], 'doc-cast': ['cast'], 'doc-cron': ['cron'],
+  };
+  const needsOf = el => {
+    const tag = el.tagName.toLowerCase();
+    const extra = [];
+    if ((tag === 'doc-chart' && el.hasAttribute('type')) || (tag === 'doc-vega' && el.querySelector('script[type="text/csv"], script[type="text/tab-separated-values"]'))) extra.push('papaparse');
+    if (tag === 'doc-openapi' && !/^\s*[{[]/.test(el.textContent)) extra.push('yaml');
+    return [...(NEEDS[tag] || []), ...extra];
+  };
+  // Structural and light components load at once: the page layout depends on them and they carry no big library.
+  const AT_ONCE = new Set(['doc-tabs', 'doc-steps', 'doc-scrolly', 'doc-note', 'doc-arrow', 'doc-term', 'doc-glossary', 'doc-tour',
+    'doc-flow', 'doc-mark', 'doc-compare', 'doc-figure', 'doc-timeline', 'doc-json', 'doc-table', 'doc-cron']);
+  const startedFiles = new Map(), startedLibs = new Map();
+  function loadComponent(el) {
+    const tag = el.tagName.toLowerCase();
+    const libs = needsOf(el).map(n => { if (!startedLibs.has(n)) startedLibs.set(n, lib(n).catch(() => {})); return startedLibs.get(n); });
+    const file = COMPONENTS[tag];
+    if (!startedFiles.has(file)) {
+      loadCss(`${SHARED}/components/${file}.css`);
+      startedFiles.set(file, loadScript(`${SHARED}/components/${file}.js`).catch(e => console.error('[docs]', e.message)));
+    }
+    return Promise.all([startedFiles.get(file), ...libs]);
+  }
+  async function loadComponents() {
+    const els = $$(Object.keys(COMPONENTS).join(','));
+    if (!els.length) return;
+    els.filter(el => AT_ONCE.has(el.tagName.toLowerCase())).forEach(loadComponent);
+    const lazy = els.filter(el => !AT_ONCE.has(el.tagName.toLowerCase()));
+    if (!lazy.length) return;
+    await afterPaint();
+    lazy.forEach(el => schedule(el, () => loadComponent(el)));
+  }
+  // Everything still waiting, now (printing).
+  function loadAll() {
+    [...jobs.keys()].forEach(run);
+    return Promise.all([...inflight, mermaidQueue]);
   }
 
   function reveal() {
@@ -584,7 +699,7 @@
       const b = e.target.closest('[data-action]'); if (!b) return;
       const a = b.dataset.action;
       if (a === 'theme') toggleTheme();
-      if (a === 'print') window.print();
+      if (a === 'print') { await loadAll(); await new Promise(r => setTimeout(r, 1200)); window.print(); }
       if (a === 'export') toast(t(await copy(exportMarkdown()) ? 'feedbackCopied' : 'copyFailed'));
       if (a === 'reset') {
         store.save({});
@@ -754,12 +869,15 @@
   async function renderMarkdown() {
     const blocks = $$('doc-md, script[type="text/markdown"]').filter(el => el.tagName === 'DOC-MD' || el.parentElement?.tagName !== 'DOC-MD');
     if (!blocks.length) return;
-    try { await lib('marked'); } catch (e) { blocks.forEach(b => b.replaceWith(Object.assign(document.createElement('div'), { className: 'doc-error', textContent: `markdown: ${e.message}` }))); return; }
-    const md = new marked.Marked({ gfm: true, renderer: { code: fence } });
-    // extensions load only when the source uses them: footnotes [^1], and $math$ / $$math$$ with KaTeX
+    // extensions load only when the source uses them (footnotes [^1]; $math$ / $$math$$ with KaTeX), all at once
     const all = blocks.map(el => el.textContent).join('\n');
-    if (/\[\^[^\]]+\]/.test(all)) { await lib('footnote'); md.use(markedFootnote()); }
-    if (/\$[^\s$]/.test(all)) { await lib('mdmath'); md.use(markedKatex({ throwOnError: false, nonStandard: false })); }
+    const useFootnotes = /\[\^[^\]]+\]/.test(all), useMath = /\$[^\s$]/.test(all);
+    try {
+      await Promise.all([lib('marked'), useFootnotes && lib('footnote'), useMath && lib('mdmath')]);
+    } catch (e) { blocks.forEach(b => b.replaceWith(Object.assign(document.createElement('div'), { className: 'doc-error', textContent: `markdown: ${e.message}` }))); return; }
+    const md = new marked.Marked({ gfm: true, renderer: { code: fence } });
+    if (useFootnotes) md.use(markedFootnote());
+    if (useMath) md.use(markedKatex({ throwOnError: false, nonStandard: false }));
     // A markdown <script> written right after the kit tag is parsed into <head>; its output belongs at the start of <body>.
     const bodyStart = document.body.firstChild;
     for (const el of blocks) {

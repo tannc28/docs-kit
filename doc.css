@@ -349,6 +349,21 @@ pre.mermaid svg .node rect,pre.mermaid svg rect.actor{rx:10px;ry:10px}
 .mw-new::before{content:"TO-BE";position:absolute;top:-.7rem;left:.6rem;z-index:1;background:var(--ok);color:var(--bg);font:700 10px/1 var(--sans);letter-spacing:.06em;padding:.2rem .4rem;border-radius:4px}
 .mw-gone{opacity:.45;text-decoration:line-through}
 
+/* ---------- placeholders: a component still waiting for its library (it loads near the viewport) holds about its
+   final height, so the page does not jump when it draws; a Mermaid block hides its source until it is a diagram ---------- */
+:is(doc-chart, doc-vega, doc-graph, doc-map, doc-seq, doc-openapi, doc-cast, doc-diff):not(:defined),
+pre.mermaid:not([data-processed]){display:block;border-radius:var(--radius);color:transparent;
+  background:linear-gradient(100deg,var(--code) 40%,var(--panel) 50%,var(--code) 60%) 0 0/300% 100%;animation:docs-wait 1.6s linear infinite}
+pre.mermaid:not([data-processed]){min-height:160px;overflow:hidden}
+doc-chart:not(:defined),doc-vega:not(:defined){min-height:300px}
+doc-graph:not(:defined){min-height:420px}
+doc-map:not(:defined){min-height:440px}
+doc-openapi:not(:defined){min-height:560px}
+:is(doc-seq, doc-cast, doc-diff):not(:defined){min-height:220px}
+@keyframes docs-wait{to{background-position:-150% 0}}
+@media (prefers-reduced-motion:reduce){:is(doc-chart, doc-vega, doc-graph, doc-map, doc-seq, doc-openapi, doc-cast, doc-diff):not(:defined),pre.mermaid:not([data-processed]){animation:none}}
+@media print{pre.mermaid:not([data-processed]){color:inherit;background:none}}
+
 /* ---------- runtime helpers shared by components ---------- */
 .doc-error{border:1px solid var(--bad);background:var(--bad-bg);color:var(--bad);padding:.6rem .8rem;border-radius:8px;font:13px/1.5 var(--mono);white-space:pre-wrap}
 .doc-hl{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px;transition:outline-color .2s}

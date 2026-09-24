@@ -13,7 +13,7 @@ Save this as `page.html` and open it:
 <html lang="en">
 <meta charset="utf-8">
 <title>Checkout service</title>
-<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.3.1/doc.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.4.0/doc.js"></script>
 
 <script type="text/markdown">
 # Checkout service
@@ -42,7 +42,10 @@ Hour,Orders,Failed
 ````
 
 The kit links its own stylesheet, builds the page frame and the contents sidebar from the headings, and loads each
-library only when the page uses it. The URL names a release: its files never change, so a page keeps working as it
+library only when the page uses it — and only when the reader gets near it: what is on screen loads first and gets
+the whole connection, the next screen follows, the rest waits until the reader scrolls there. Nothing heavy starts
+before the text has painted. Add `?eager` to the URL (or `data-eager` to `<html>`) to load everything at once, for
+screenshots, PDFs and headless checks; the Print button does it itself. The URL names a release: its files never change, so a page keeps working as it
 was written.
 
 ## What you can write
@@ -76,7 +79,7 @@ Each file in `components/` starts with its full attribute reference.
 
 Give the assistant this line with the task:
 
-> Write the page as one HTML file with docs-kit. Follow https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.3.1/llms-full.txt
+> Write the page as one HTML file with docs-kit. Follow https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.4.0/llms-full.txt
 
 - [`llms.txt`](llms.txt) — the short index ([llmstxt.org](https://llmstxt.org) format)
 - [`llms-full.txt`](llms-full.txt) — the page template, which tool to use for what, the rules for a good page, and

@@ -9,7 +9,7 @@ chrome="${CHROME:-$(command -v google-chrome || command -v chromium || command -
 abs="$(cd "$(dirname "$page")" && pwd)/$(basename "$page")"
 dom="$(mktemp)"; log="$(mktemp)"; trap 'rm -f "$dom" "$log"' EXIT
 "$chrome" --headless=new --no-sandbox --disable-gpu --enable-unsafe-swiftshader --enable-logging=stderr --v=0 \
-  --virtual-time-budget=20000 --dump-dom "file://$abs" > "$dom" 2> "$log" || true
+  --virtual-time-budget=20000 --dump-dom "file://$abs?eager" > "$dom" 2> "$log" || true   # ?eager: check every component, not only the first screen
 errors=$(grep -o 'class="doc-error"[^<]*' "$dom" | sed 's/class="doc-error">//' || true)
 js=$(grep -o 'Uncaught [^"]*' "$log" | sort -u || true)
 headings=$(grep -o '<h[12][ >]' "$dom" | wc -l | tr -d ' ')

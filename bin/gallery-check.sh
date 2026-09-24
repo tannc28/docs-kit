@@ -13,7 +13,7 @@ fail=0
 
 render() {
   "$CHROME" --headless=new --no-sandbox --disable-gpu --enable-unsafe-swiftshader \
-    --virtual-time-budget=15000 --dump-dom "file://$1" 2>/dev/null > "$dom"
+    --virtual-time-budget=15000 --dump-dom "file://$1?eager" 2>/dev/null > "$dom"   # ?eager: headless never scrolls, so load everything
 }
 count() { { grep -o "$1" "$dom" || true; } | wc -l | tr -d ' '; }   # zero matches is a result, not an error
 need() { [ "$2" -ge "$3" ] || { echo "  FAIL $1: $4"; fail=1; }; }
