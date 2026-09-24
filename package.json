@@ -1,0 +1,37 @@
+{
+  "name": "@tannc26/docs-kit",
+  "version": "0.3.0",
+  "description": "One script tag turns short Markdown or plain HTML into a finished documentation page: diagrams, charts, tables, maps, maths, terminal replays and API references. Made for people and AI assistants.",
+  "keywords": [
+    "documentation",
+    "html",
+    "markdown",
+    "mermaid",
+    "charts",
+    "diagrams",
+    "report",
+    "llm",
+    "ai"
+  ],
+  "homepage": "https://github.com/tannc28/docs-kit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tannc28/docs-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tannc28/docs-kit/issues"
+  },
+  "jsdelivr": "doc.js",
+  "files": [
+    "doc.js",
+    "doc.css",
+    "components/",
+    "vendor/",
+    "examples/",
+    "gallery.html",
+    "AGENTS.md",
+    "llms.txt",
+    "llms-full.txt",
+    "VERSION"
+  ]
+}

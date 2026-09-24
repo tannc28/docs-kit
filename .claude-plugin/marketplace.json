@@ -1,0 +1,15 @@
+{
+  "name": "docs-kit",
+  "description": "docs-kit: one-tag HTML documentation pages for people and AI assistants.",
+  "owner": {
+    "name": "tannc28",
+    "url": "https://github.com/tannc28"
+  },
+  "plugins": [
+    {
+      "name": "docs-kit",
+      "source": "./plugin",
+      "description": "Write documentation pages, reports and explainers as one HTML file: Markdown in, diagrams, charts, tables, terminal replays and API references out."
+    }
+  ]
+}

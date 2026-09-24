@@ -1,3 +1,8 @@
+---
+name: docs-kit
+description: Write a documentation page, report, explainer, design note, runbook or dashboard as one HTML file with the docs-kit CDN — Markdown in; Mermaid diagrams, charts, sortable tables, maps, maths, terminal replays and API references out. Use whenever the user asks for an HTML page, doc, report or write-up to read in a browser, or for docs-kit by name.
+---
+
 # Writing pages with docs-kit
 
 Instructions for any assistant (or person) asked to produce an HTML page, report, explainer, design note or
@@ -93,3 +98,10 @@ HTML and `<doc-*>` tags work inside the Markdown block. The attribute reference 
 - Collapsible: `<details><summary>…</summary><div class="inner">…</div></details>`
 - Muted and small text: `.muted`, `.small`; a page intro paragraph right after the title becomes the lede
 - Questions for the reader: `.decision` blocks and `ul.checklist`; `[data-action="export"]` copies the answers
+
+## 5. Component reference
+
+Every `<doc-*>` element's attributes are in `reference.md` next to this file — read it when a page needs a component
+beyond the fences above. After writing a page, run `docs-kit-check <page.html>` (on the PATH while this plugin is
+enabled) when Chrome is available: it renders the page and lists any error the kit drew, any JavaScript error, and
+a page with no headings.

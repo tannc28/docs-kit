@@ -1,0 +1,21 @@
+{
+  "name": "docs-kit",
+  "version": "0.3.0",
+  "displayName": "docs-kit",
+  "description": "Write documentation pages, reports and explainers as one HTML file with the docs-kit CDN: Markdown in, diagrams, charts, sortable tables, maps, terminal replays and API references out.",
+  "author": {
+    "name": "tannc28",
+    "url": "https://github.com/tannc28"
+  },
+  "homepage": "https://github.com/tannc28/docs-kit",
+  "repository": "https://github.com/tannc28/docs-kit",
+  "keywords": [
+    "documentation",
+    "html",
+    "markdown",
+    "diagrams",
+    "charts",
+    "mermaid",
+    "report"
+  ]
+}

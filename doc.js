@@ -1,5 +1,5 @@
 /* docs-kit runtime. One tag is enough:
-     <script src="https://cdn.jsdelivr.net/gh/tannc28/docs-kit@<tag>/doc.js"></script>   (in <head>, or with defer)
+     <script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@<version>/doc.js"></script>   (in <head>, or with defer)
    It links doc.css itself when the page has not, and keeps the page hidden until the stylesheet arrives.
    Features are opt-in by markup, so a doc only writes content:
      <doc-md> / <script type="text/markdown"> -> Markdown, rendered first. Fences: mermaid, chart <type>, table|csv|tsv,

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# docs-kit-check <page.html> — render a docs-kit page in headless Chrome and report what went wrong, if anything:
+# error blocks the kit drew into the page, JavaScript errors, and an empty page. Exit 0 means the page rendered clean.
+set -euo pipefail
+page="${1:?usage: docs-kit-check <page.html>}"
+[ -f "$page" ] || { echo "no such file: $page"; exit 2; }
+chrome="${CHROME:-$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)}"
+[ -n "$chrome" ] || { echo "docs-kit-check needs Chrome or Chromium (set CHROME=/path/to/chrome)"; exit 2; }
+abs="$(cd "$(dirname "$page")" && pwd)/$(basename "$page")"
+dom="$(mktemp)"; log="$(mktemp)"; trap 'rm -f "$dom" "$log"' EXIT
+"$chrome" --headless=new --no-sandbox --disable-gpu --enable-unsafe-swiftshader --enable-logging=stderr --v=0 \
+  --virtual-time-budget=20000 --dump-dom "file://$abs" > "$dom" 2> "$log" || true
+errors=$(grep -o 'class="doc-error"[^<]*' "$dom" | sed 's/class="doc-error">//' || true)
+js=$(grep -o 'Uncaught [^"]*' "$log" | sort -u || true)
+headings=$(grep -o '<h[12][ >]' "$dom" | wc -l | tr -d ' ')
+fail=0
+[ -z "$errors" ] || { echo "Error blocks in the page:"; echo "$errors" | sed 's/^/  - /'; fail=1; }
+[ -z "$js" ] || { echo "JavaScript errors:"; echo "$js" | sed 's/^/  - /'; fail=1; }
+[ "$headings" -gt 0 ] || { echo "The page has no headings: did the Markdown block render?"; fail=1; }
+[ $fail -eq 0 ] && echo "ok: $page rendered clean ($headings headings)"
+exit $fail

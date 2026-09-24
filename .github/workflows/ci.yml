@@ -35,14 +35,29 @@ jobs:
       - name: Gallery and example pages render every component
         run: bash bin/gallery-check.sh
 
+      - name: The Claude Code marketplace and plugin are valid
+        run: |
+          npm install --global --no-fund --no-audit @anthropic-ai/claude-code > /dev/null
+          claude plugin validate . --strict
+          claude plugin validate plugin --strict
+
+      - name: docs-kit-check passes on the example pages
+        run: for f in examples/*.html; do plugin/bin/docs-kit-check "$f"; done
+
   release:
     needs: check
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write        # npm Trusted Publishing (OIDC): no npm token is stored in the repository
     steps:
       - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
 
       - name: Tag and publish the release in VERSION, once
         id: tag
@@ -56,8 +71,19 @@ jobs:
             echo "released=false" >> "$GITHUB_OUTPUT"
             echo "$version is already released; bump VERSION to publish a new one." >> "$GITHUB_STEP_SUMMARY"
           else
-            gh release create "$version" --target "$GITHUB_SHA" --title "$version" --generate-notes
+            (cd plugin/skills && zip -qr "$RUNNER_TEMP/docs-kit-skill.zip" docs-kit)
+            gh release create "$version" "$RUNNER_TEMP/docs-kit-skill.zip" --target "$GITHUB_SHA" --title "$version" --generate-notes
             echo "released=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish to npm, once per version
+        run: |
+          version="$(cat VERSION)"
+          if npm view "@tannc26/docs-kit@$version" version > /dev/null 2>&1; then
+            echo "@tannc26/docs-kit@$version is already on npm." >> "$GITHUB_STEP_SUMMARY"
+          elif ! npm publish --provenance --access public; then
+            echo "npm publish failed. Enable Trusted Publishing for @tannc26/docs-kit on npmjs.com (package settings: GitHub Actions, repository tannc28/docs-kit, workflow ci.yml)." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
           fi
 
       - name: Warm jsDelivr and print the URLs
@@ -65,7 +91,7 @@ jobs:
         env:
           VERSION: ${{ steps.tag.outputs.version }}
         run: |
-          base="https://cdn.jsdelivr.net/gh/${{ github.repository }}@${VERSION}"
+          base="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@${VERSION#v}"
           for f in doc.js doc.css llms.txt llms-full.txt AGENTS.md; do
             curl -fsS --retry 6 --retry-delay 10 --retry-all-errors -o /dev/null "$base/$f"
           done
