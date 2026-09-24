@@ -1,7 +1,12 @@
-/* ~/Docs shared runtime — link with <script src="{{SHARED}}/doc.js" defer></script>.
+/* docs-kit runtime. One tag is enough:
+     <script src="https://cdn.jsdelivr.net/gh/tannc28/docs-kit@<tag>/doc.js"></script>   (in <head>, or with defer)
+   It links doc.css itself when the page has not, and keeps the page hidden until the stylesheet arrives.
    Features are opt-in by markup, so a doc only writes content:
-     main h2[id], h3[id]         -> sidebar TOC + scrollspy + anchor links
-     pre.mermaid                 -> vendor/mermaid.min.js is loaded on demand
+     <doc-md> / <script type="text/markdown"> -> Markdown, rendered first (fences: mermaid, chart, table, csv, math, any code)
+     no .page/main skeleton      -> content is wrapped in main + a sidebar TOC
+     main h2, h3                 -> sidebar TOC + scrollspy + anchor links (ids generated from the text when missing)
+     a bare <table> in main      -> styled; more than 5 columns becomes a wide table; headers sort
+     pre.mermaid                 -> Mermaid is loaded on demand
      table[data-sortable]        -> click a header to sort
      .filters[data-target] .btn[data-filter] + [data-tags] -> tag filter
      input/textarea[name] in main -> saved to localStorage per file
@@ -9,12 +14,25 @@
      [data-action="reset"|"theme"|"print"]
      [data-reveal="delayMs"]      -> fades in when scrolled into view
      <doc-*> custom elements      -> components/<name>.js + .css loaded only when the tag is on the page
-   Components use window.Docs: { shared, esc, toast, fail, loadScript, loadCss, lib, mermaid, theme, t, icon, button, player, stepper }.
-   A doc's own <script> that needs Docs runs on the 'docs:ready' event (or at once when Docs.ready is true).
-   Every visible string goes through Docs.t(key) — English defaults, overridable per doc via #doc-labels.
+   Components use window.Docs: { shared, esc, toast, fail, loadScript, loadCss, lib, rows, enhance, mermaid, theme, t, icon,
+   button, player, stepper }. A doc's own <script> that needs Docs runs on the 'docs:ready' event (or at once when
+   Docs.ready is true). Every visible string goes through Docs.t(key) — English defaults, overridable per doc via #doc-labels.
 */
 (() => {
   const SHARED = (document.currentScript?.src || '').replace(/\/doc\.js(\?.*)?$/, '');
+
+  // One-tag setup: a page that links only doc.js gets doc.css too. The page stays hidden until the stylesheet
+  // arrives (at most 4 s), so it never flashes unstyled when doc.js runs in <head>.
+  if (SHARED && !document.querySelector('link[rel="stylesheet"][href$="/doc.css"], link[rel="stylesheet"][href="doc.css"]')) {
+    const root = document.documentElement;
+    const hide = Object.assign(document.createElement('style'), { textContent: 'html.docs-css-wait{visibility:hidden}' });
+    const css = Object.assign(document.createElement('link'), { rel: 'stylesheet', href: `${SHARED}/doc.css` });
+    const show = () => root.classList.remove('docs-css-wait');
+    root.classList.add('docs-css-wait');
+    css.onload = css.onerror = show;
+    setTimeout(show, 4000);
+    (document.head || root).append(hide, css);
+  }
   const STORE_KEY = 'docs:' + location.pathname;
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -23,7 +41,8 @@
   //   <script type="application/json" id="doc-labels">{"play": "Run", "all": "Show every step"}</script>
   // Values are plain strings; {name} placeholders are filled from the vars passed to Docs.t(). ----------
   const LABELS = {
-    toc: 'Contents',
+    toc: 'Contents', themeButton: 'Theme', printButton: 'Print',
+    'alert.note': 'Note', 'alert.tip': 'Tip', 'alert.important': 'Important', 'alert.warning': 'Warning', 'alert.caution': 'Caution',
     play: 'Play', pause: 'Pause', prev: 'Previous step', next: 'Next step', all: 'All steps',
     step: 'Step {n}', steps: '{n} steps', stepOf: '{i} / {n}', seqIdle: '{n} steps · press play to walk through',
     drawing: 'Drawing diagram…',
@@ -33,7 +52,7 @@
     graphHint: 'Click a node to read its note.',
     expandAll: 'Expand all', collapseAll: 'Collapse all', copy: 'Copy', copied: '{what} copied',
     note: 'Note {n}', noTerms: 'No terms on this page yet.', before: 'Before', after: 'After',
-    feedbackCopied: 'Feedback copied — paste it to Claude', copyFailed: 'Copy failed', cleared: 'Cleared', theme: 'Theme: {t}',
+    feedbackCopied: 'Feedback copied — paste it where it is needed', copyFailed: 'Copy failed', cleared: 'Cleared', theme: 'Theme: {t}',
   };
   try {
     const o = document.getElementById('doc-labels');
@@ -139,18 +158,24 @@
     clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 1800);
   }
 
-  // Heading ids must be written by hand in English ASCII; this fallback only prevents a broken TOC.
-  function ensureId(h, i) {
-    if (!h.id) h.id = 'sec-' + (i + 1);
-    return h.id;
+  // A heading without an id gets one from its text: lowercase ASCII, accents folded, unique on the page.
+  const slug = text => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\u0111\u0110]/g, 'd')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'section';
+  function ensureId(h) {
+    if (h.id) return h.id;
+    const base = slug(h.textContent);
+    let id = base;
+    for (let n = 2; document.getElementById(id); n++) id = `${base}-${n}`;
+    h.id = id;
+    return id;
   }
 
   function buildToc() {
     const main = $('main'); const toc = $('.toc nav');
     if (!main || !toc) return;
     const hs = $$('h2, h3', main).filter(h => !h.closest('.uc, .card, details, doc-tabs, doc-steps'));
-    hs.forEach((h, i) => {
-      const id = ensureId(h, i);
+    hs.forEach(h => {
+      const id = ensureId(h);
       const a = document.createElement('a');
       const num = h.querySelector('.num');
       const label = [...h.childNodes].filter(n => n !== num).map(n => n.textContent).join('').trim();
@@ -251,19 +276,18 @@
     hljs: { js: ['highlightjs/11.12.0/highlight.min.js'] },  // common languages; others load per block via hljsLang()
     echarts: { js: ['echarts/6.1.0/echarts.min.js'] },
     diff2html: { needs: ['hljs'], js: ['jsdiff/9.0.0/diff.min.js', 'diff2html/3.4.56/diff2html-ui-base.min.js'], css: ['diff2html/3.4.56/diff2html.min.css'] },
-    viewer: { js: ['viewerjs/1.14.0/viewer.min.js'], css: ['viewerjs/1.14.0/viewer.min.css'] },
-    floating: { js: ['floating-ui/1.8.0/floating-ui.core.umd.min.js', 'floating-ui/1.8.0/floating-ui.dom.umd.min.js'] },
     cytoscape: { js: ['cytoscape/3.34.3/cytoscape.min.js', 'cytoscape-dagre/4.0.1/cytoscape-dagre.min.js'] },
     rough: { js: ['roughjs/4.6.6/rough.js'] },
     katex: { js: ['katex/0.18.7/katex.min.js'], css: ['katex/0.18.7/katex.min.css'] },
     lucide: { js: ['lucide/1.46.0/lucide.min.js'] },
-    anime: { js: ['animejs/4.5.0/anime.umd.min.js'] },
     panzoom: { js: ['panzoom/4.6.2/panzoom.min.js'] },
     maplibre: { js: ['maplibre-gl/5.24.0/maplibre-gl.js'], css: ['maplibre-gl/5.24.0/maplibre-gl.css'] },
     turf: { js: ['turf/7.4.0/turf.min.js'] },
     devices: { css: ['devices.css/0.2.0/devices.min.css'] },
     scrollama: { js: ['scrollama/3.2.0/scrollama.min.js'] },
     notation: { js: ['rough-notation/0.5.1/rough-notation.iife.js'] },
+    marked: { js: ['marked/18.0.14/marked.umd.js'] },
+    papaparse: { js: ['papaparse/5.7.0/papaparse.min.js'] },
   };
   const libReady = new Map();
   function lib(name) {
@@ -331,6 +355,7 @@
     'doc-code': 'code', 'doc-chart': 'chart', 'doc-diff': 'diff', 'doc-graph': 'graph', 'doc-icon': 'icon',
     'doc-math': 'math', 'doc-zoom': 'zoom', 'doc-sketch': 'sketch', 'doc-arrow': 'arrow',
     'doc-note': 'note', 'doc-flow': 'flow', 'doc-map': 'map', 'doc-device': 'device', 'doc-scrolly': 'scrolly', 'doc-mark': 'mark',
+    'doc-table': 'table',
   };
   function loadComponents() {
     const files = new Set(Object.entries(COMPONENTS).filter(([tag]) => $(tag)).map(([, file]) => file));
@@ -355,8 +380,10 @@
     });
   }
 
-  function sortableTables() {
-    $$('table[data-sortable]').forEach(table => {
+  function sortableTables(root = document) {
+    $$('table[data-sortable]', root).forEach(table => {
+      if (table.dataset.sortReady) return;
+      table.dataset.sortReady = '1';
       $$('th', table).forEach((th, col) => th.addEventListener('click', () => {
         const dir = th.getAttribute('aria-sort') === 'ascending' ? 'descending' : 'ascending';
         $$('th', table).forEach(x => x.removeAttribute('aria-sort'));
@@ -455,8 +482,10 @@
 
   // Wide table: fixed column widths from th[data-w], horizontal + vertical scroll, sticky header,
   // first data-freeze columns pinned, th[data-group] columns tinted and hideable, row search.
-  function wideTables() {
-    $$('.wide').forEach(box => {
+  function wideTables(root = document) {
+    $$('.wide', root).forEach(box => {
+      if (box.dataset.wideReady) return;
+      box.dataset.wideReady = '1';
       const table = $('table', box);
       const head = table?.tHead?.rows[table.tHead.rows.length - 1];
       if (!head) return;
@@ -553,8 +582,158 @@
     });
   }
 
+  // A bare <table> in main gets the kit look: .tbl, or the wide-table box when it has more than 5 columns.
+  function wrapTables(root = document) {
+    $$('main table', root).forEach(table => {
+      if (table.classList.length || table.closest('.tbl, .wide, .mock-web, pre, [data-no-wrap], doc-diff, doc-code, doc-json, doc-table')) return;
+      const box = document.createElement('div');
+      box.className = (table.rows[0]?.cells.length || 0) > 5 ? 'wide' : 'tbl';
+      table.before(box);
+      box.append(table);
+      if (table.tHead) table.setAttribute('data-sortable', '');
+      alignNumbers(table);
+    });
+  }
+
+  // Columns whose body cells are all numbers (1 240, 12.5, -3, 0.2%) are right-aligned, headers included.
+  const NUMBER = /^[-+]?[\d\s.,]*\d[\d\s.,]*%?$/;
+  function alignNumbers(table) {
+    const head = table.tHead?.rows[0];
+    const body = [...table.tBodies].flatMap(b => [...b.rows]).filter(r => head && r.cells.length === head.cells.length);
+    if (!head || !body.length) return;
+    [...head.cells].forEach((th, i) => {
+      const vals = body.map(r => r.cells[i].textContent.trim()).filter(Boolean);
+      if (!vals.length || !vals.every(v => NUMBER.test(v))) return;
+      th.classList.add('num');
+      body.forEach(r => r.cells[i].classList.add('num'));
+    });
+  }
+
+  // Re-run the table behaviours on content a component added after start-up.
+  function enhance(root) {
+    wrapTables(root); sortableTables(root); wideTables(root);
+  }
+
+  // A page without the .page/main skeleton gets it: content moves into <main>, a sidebar TOC appears, and a
+  // leading h1 + paragraph become the page header.
+  function autoLayout() {
+    if ($('.page')) return;
+    let main = $('main');
+    const page = document.createElement('div');
+    page.className = 'page';
+    if (main) main.replaceWith(page);
+    else {
+      main = document.createElement('main');
+      [...document.body.childNodes].forEach(n => { if (!(n.nodeType === 1 && n.matches('script, style, template, link'))) main.append(n); });
+      document.body.prepend(page);
+    }
+    const aside = document.createElement('aside');
+    aside.className = 'toc';
+    aside.innerHTML = `<p class="toc-title">${esc(t('toc'))}</p><nav></nav><div class="tools">`
+      + `<button class="btn" type="button" data-action="theme">${esc(t('themeButton'))}</button>`
+      + `<button class="btn" type="button" data-action="print">${esc(t('printButton'))}</button></div>`;
+    page.append(aside, main);
+    const first = main.firstElementChild;
+    const h1 = first?.classList.contains('doc-md') ? first.firstElementChild : first;
+    if (h1?.tagName === 'H1' && !$('.doc-head', main)) {
+      const head = document.createElement('header');
+      head.className = 'doc-head';
+      h1.before(head);
+      head.append(h1);
+      const p = head.nextElementSibling;
+      if (p?.tagName === 'P' && !p.className) { p.className = 'lede'; head.append(p); }
+    }
+  }
+
+  const dedent = text => {
+    const lines = text.replace(/^\s*\n|\n\s*$/g, '').split('\n');
+    const pad = Math.min(...lines.filter(l => l.trim()).map(l => l.match(/^\s*/)[0].length));
+    return lines.map(l => l.slice(pad || 0)).join('\n');
+  };
+
+  // Rows of a data block: CSV (default), TSV or JSON (array of objects, or array of arrays with the header first).
+  // `el` holds the data in a child <script type="text/csv|text/tab-separated-values|application/json">, in its own
+  // text, or in the element named by its src="id". Returns an array of arrays, header row first.
+  async function rows(el) {
+    const src = el.getAttribute('src');
+    const holder = src ? document.getElementById(src) : el.querySelector(':scope > script');
+    if (src && !holder) throw new Error(`no element with id "${src}"`);
+    const type = holder?.type || 'text/csv';
+    const text = dedent(holder ? holder.textContent : el.textContent);
+    if (/json/.test(type)) {
+      const data = JSON.parse(text);
+      if (!Array.isArray(data) || !data.length) throw new Error('JSON data must be a non-empty array');
+      if (Array.isArray(data[0])) return data;
+      const keys = [...new Set(data.flatMap(o => Object.keys(o)))];
+      return [keys, ...data.map(o => keys.map(k => o[k] ?? ''))];
+    }
+    await lib('papaparse');
+    const parsed = Papa.parse(text.split('\n').map(l => l.trim()).filter(Boolean).join('\n'),
+      { delimiter: /tab-separated/.test(type) ? '\t' : '', skipEmptyLines: true });
+    if (parsed.errors.length) throw new Error(`${parsed.errors[0].message} (row ${parsed.errors[0].row + 1})`);
+    return parsed.data;
+  }
+
+  // Markdown (marked, GFM). Fenced blocks become components: mermaid, chart [type], table|csv|tsv, math, and any
+  // other language becomes highlighted code. GitHub alerts (> [!NOTE] …) become callouts. Raw HTML passes through,
+  // so <doc-*> tags can sit inside the Markdown.
+  const FENCE_ATTR = /^([a-z][a-z-]*)=("[^"]*"|\S+)$/;
+  const scriptText = text => text.replace(/<\/script/gi, '<\\/script');
+  function fence({ text, lang }) {
+    const [kind = '', ...args] = (lang || '').trim().match(/[^\s"=]+="[^"]*"|\S+/g) || [];
+    const attrs = args.filter(a => FENCE_ATTR.test(a)).map(a => { const [, k, v] = a.match(FENCE_ATTR); return ` ${k}="${esc(v.replace(/^"|"$/g, ''))}"`; }).join('');
+    const bare = args.find(a => !a.includes('='));
+    if (kind === 'mermaid') return `<pre class="mermaid">${esc(text)}</pre>`;
+    if (kind === 'math') return `<doc-math display>${esc(text)}</doc-math>`;
+    if (kind === 'chart') {
+      return bare ? `<doc-chart type="${esc(bare)}"${attrs}><script type="text/csv">${scriptText(text)}</script></doc-chart>`
+        : `<doc-chart${attrs}><script type="application/json">${scriptText(text)}</script></doc-chart>`;
+    }
+    if (kind === 'table' || kind === 'csv' || kind === 'tsv') {
+      return `<doc-table${attrs}><script type="${kind === 'tsv' ? 'text/tab-separated-values' : 'text/csv'}">${scriptText(text)}</script></doc-table>`;
+    }
+    if (kind) return `<doc-code lang="${esc(kind)}"${attrs}><script type="text/plain">${scriptText(text)}</script></doc-code>`;
+    return false;
+  }
+  const ALERTS = { NOTE: 'data', TIP: 'idea', IMPORTANT: 'why', WARNING: 'warn', CAUTION: 'risk' };
+  function alerts(box) {
+    $$('blockquote', box).forEach(q => {
+      const p = q.firstElementChild;
+      const m = p?.tagName === 'P' && p.innerHTML.match(/^\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(<br>)?/i);
+      if (!m) return;
+      const kind = m[1].toUpperCase();
+      p.innerHTML = p.innerHTML.slice(m[0].length);
+      const c = document.createElement('div');
+      c.className = `callout ${ALERTS[kind]}`;
+      c.innerHTML = `<div class="ct">${esc(t('alert.' + kind.toLowerCase()))}</div>`;
+      c.append(...q.childNodes);
+      q.replaceWith(c);
+    });
+  }
+  // Text nodes are read raw and elements as HTML, so both "> quote" lines and inline <doc-*> tags survive.
+  const sourceOf = el => [...el.childNodes].map(n => n.nodeType === 3 ? n.textContent : n.nodeType === 1 ? n.outerHTML : '').join('');
+  async function renderMarkdown() {
+    const blocks = $$('doc-md, script[type="text/markdown"]').filter(el => el.tagName === 'DOC-MD' || el.parentElement?.tagName !== 'DOC-MD');
+    if (!blocks.length) return;
+    try { await lib('marked'); } catch (e) { blocks.forEach(b => b.replaceWith(Object.assign(document.createElement('div'), { className: 'doc-error', textContent: `markdown: ${e.message}` }))); return; }
+    const md = new marked.Marked({ gfm: true, renderer: { code: fence } });
+    // A markdown <script> written right after the kit tag is parsed into <head>; its output belongs at the start of <body>.
+    const bodyStart = document.body.firstChild;
+    for (const el of blocks) {
+      const inner = el.tagName === 'DOC-MD' ? el.querySelector(':scope > script[type="text/markdown"]') : el;
+      const box = document.createElement('div');
+      box.className = 'doc-md';
+      box.innerHTML = md.parse(dedent(inner ? inner.textContent : sourceOf(el)));
+      alerts(box);
+      if (el.closest('head')) { document.body.insertBefore(box, bodyStart); el.remove(); }
+      else el.replaceWith(box);
+    }
+  }
+
   initTheme();
-  function init() {
+  async function init() {
+    await renderMarkdown();
+    autoLayout(); wrapTables();
     buildToc(); sortableTables(); filters(); wideTables(); persistence(); actions(); reveal(); loadComponents(); loadMermaid();
     $$('input[type=range]').forEach(rangeFill);
     document.addEventListener('input', e => { if (e.target.matches?.('input[type=range]')) rangeFill(e.target); });
@@ -562,7 +741,7 @@
     document.dispatchEvent(new Event('docs:ready'));
   }
   window.Docs = { exportMarkdown, shared: SHARED, esc, toast, fail, loadScript, loadCss, lib, hljsLang, hljsTheme, mermaid: mermaidLib, theme: currentTheme,
-    t, icon, button, player, stepper, rangeFill, ready: false };
+    t, icon, button, player, stepper, rangeFill, rows, enhance, ready: false };
   // doc.js may arrive after parsing (a fallback copy inserted late, an async tag): initialise right away then,
   // otherwise wait for the DOM. A doc's own script waits for 'docs:ready' (or checks Docs.ready), not DOMContentLoaded.
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

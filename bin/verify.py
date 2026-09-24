@@ -45,12 +45,17 @@ def check(f):
         return errs + ["file is empty"]
     if not re.search(r"<title>[^<]+</title>", s[:8192]):
         errs.append("missing <title> in the first 8KB")
+    raw = s
     # script and style bodies are code, not markup: a template literal or a comment there is not a link or an id
     s = re.sub(r"(<(script|style)\b[^>]*>).*?(</\2>)", r"\1\3", s, flags=re.S | re.I)
     # <doc-json src="id"> names a <script> on the page, not a file
     for ref in re.findall(r'<(?!doc-json\b)[a-z][\w-]*\b[^>]*?\b(?:href|src)="([^"#:?]+)"', s):
         if not (f.parent / ref).exists():
             errs.append(f"broken relative link: {ref}")
+    # code handed to a component in <script data-before|data-after> must be type="text/plain", or the browser runs it
+    for tag in re.findall(r"<script\b(?=[^>]*\bdata-(?:before|after)\b)[^>]*>", raw):
+        if "type=" not in tag:
+            errs.append(f'script without type="text/plain" (the browser would run its code): {tag}')
     ids = re.findall(r'\sid="([^"]*)"', s)
     for dup in sorted({i for i in ids if ids.count(i) > 1}):
         errs.append(f"duplicate id: {dup!r} (a selector or anchor would hit the first one only)")

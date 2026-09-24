@@ -1,4 +1,5 @@
-/* <doc-compare labels="Before|After" [mode="slider"] [start="50"]> <div>…A…</div> <div>…B…</div> </doc-compare>
+/* doc-compare — two things side by side, or one over the other with a drag slider.
+   <doc-compare labels="Before|After" [mode="slider"] [start="50"]> <div>…A…</div> <div>…B…</div> </doc-compare>
    side (default): two labelled columns, stacked on narrow screens — code, config, text, tables.
    slider: B lies over A; drag the handle (or ← → when focused) to reveal — two same-size screens or images. */
 (() => {

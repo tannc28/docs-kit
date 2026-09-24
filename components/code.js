@@ -1,4 +1,5 @@
-/* <doc-code lang="java" file="order-service/…/OrderService.java" start="80" mark="84,86-87">
+/* doc-code — highlighted code with file name, line numbers, marked lines and a copy button.
+   <doc-code lang="java" file="order-service/…/OrderService.java" start="80" mark="84,86-87">
      <script type="text/plain">
      long total = subtotal - discount;
      </script>

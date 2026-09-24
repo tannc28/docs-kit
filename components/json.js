@@ -1,4 +1,5 @@
-/* <doc-json [open="1"]>{ "orderId": "A-1024", "items": 2 }</doc-json>
+/* doc-json — a collapsible JSON tree with expand, collapse and copy.
+   <doc-json [open="1"]>{ "orderId": "A-1024", "items": 2 }</doc-json>
    <doc-json src="payload" open="2"></doc-json> + <script type="application/json" id="payload">…</script>
    Collapsible tree; `open` = how many levels start expanded (default 1). Use src for large payloads
    or anything containing "<". Toolbar: expand all, collapse all, copy. */

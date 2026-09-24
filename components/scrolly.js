@@ -1,4 +1,5 @@
-/* <doc-scrolly [side="right|left"] [offset="0.55"]>
+/* doc-scrolly — scrollytelling: a pinned visual that follows the text as it scrolls.
+   <doc-scrolly [side="right|left"] [offset="0.55"]>
      <div>…the visual: doc-map, doc-flow, doc-steps, doc-seq, an image, any element…</div>
      <section data-go="#tour:2" [data-highlight="#part"]>Text for this step (HTML).</section>
      <section>…</section>

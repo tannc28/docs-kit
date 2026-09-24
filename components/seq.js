@@ -1,4 +1,5 @@
-/* <doc-seq [autoplay] [interval="2.5"] [caption="…"]>
+/* doc-seq — a Mermaid sequence diagram that plays message by message.
+   <doc-seq [autoplay] [interval="2.5"] [caption="…"]>
      participant API as order-service
      Web->>API: POST /orders
      API->>DB: INSERT order

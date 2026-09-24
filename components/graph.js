@@ -1,4 +1,5 @@
-/* <doc-graph height="420" [direction="LR|TB"]>
+/* doc-graph — an architecture or dependency graph laid out automatically from nodes and edges.
+   <doc-graph height="420" [direction="LR|TB"]>
      <script type="application/json">{
        "nodes": [{ "id": "api", "label": "API gateway", "group": "service", "note": "A note, HTML allowed" }],
        "edges": [{ "from": "api", "to": "queue", "label": "order.created", "dashed": true }]

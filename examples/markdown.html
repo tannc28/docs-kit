@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Markdown page</title>
+<script src="../doc.js"></script>
+
+<script type="text/markdown">
+# Order service — written in Markdown
+
+The whole page is one Markdown block. Headings build the sidebar; fenced blocks become components.
+
+## Flow
+
+```mermaid
+flowchart LR
+  Web[Web shop] -->|"① POST /orders"| API[order-service] -->|"② INSERT"| DB[(Postgres)]
+```
+
+1. The shopper checks out.
+2. The order and its outbox row are saved in one transaction.
+
+> [!WARNING]
+> Payment callbacks time out after 2 s today.
+
+## Data
+
+| Order | Status | Total |
+|---|---|---|
+| A-1024 | PAID | 480 000 |
+| A-1023 | PENDING | 150 000 |
+
+```chart line title="Orders per hour"
+Hour,Orders,Failed
+08,40,1
+09,96,2
+10,120,31
+```
+
+```table
+Service,Owner,p95 ms,Error rate
+order-service,Team A,140,0.2%
+payment-callback,Team B,820,2.1%
+```
+
+## Code and maths
+
+```java
+long total = subtotal - discount;
+```
+
+```math
+p_{95} = \min\{ t : F(t) \ge 0.95 \}
+```
+
+A term inline: <doc-term def="Same request twice, same effect as once">idempotent</doc-term>.
+</script>

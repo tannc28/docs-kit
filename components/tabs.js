@@ -1,4 +1,5 @@
-/* <doc-tabs [selected="0"]> <section data-tab="Overview">…</section> <section data-tab="SQL">…</section> </doc-tabs>
+/* doc-tabs — several views in one place, one tab each.
+   <doc-tabs [selected="0"]> <section data-tab="Overview">…</section> <section data-tab="SQL">…</section> </doc-tabs>
    Inactive panels are moved off-screen instead of display:none, because Mermaid and the wide table
    measure their content while drawing and would lay out wrongly inside a hidden element. */
 (() => {

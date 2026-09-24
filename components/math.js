@@ -1,4 +1,5 @@
-/* <doc-math>\frac{a}{b}</doc-math> inline, or <doc-math display>…</doc-math> as a centred block. KaTeX syntax.
+/* doc-math — a LaTeX formula, inline or as a block.
+   <doc-math>\frac{a}{b}</doc-math> inline, or <doc-math display>…</doc-math> as a centred block. KaTeX syntax.
    The page must start with <!doctype html> (KaTeX refuses quirks mode). */
 (() => {
   class DocMath extends HTMLElement {

@@ -1,4 +1,5 @@
-/* <doc-icon name="database"></doc-icon> — any Lucide icon name (https://lucide.dev/icons), sized to the surrounding text. */
+/* doc-icon — any Lucide icon by name, sized to the text.
+   <doc-icon name="database"></doc-icon> — any Lucide icon name (https://lucide.dev/icons), sized to the surrounding text. */
 (() => {
   let queued = false;
   const flush = () => {

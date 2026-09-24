@@ -1,4 +1,5 @@
-/* <doc-device model="iphone-14-pro" [color="black|silver|gold|…"] [width="300"] [caption="…"]>
+/* doc-device — a phone, tablet, laptop or browser frame around any screen content.
+   <doc-device model="iphone-14-pro" [color="black|silver|gold|…"] [width="300"] [caption="…"]>
      …screen content: any HTML, laid out at the device's real CSS width…
    </doc-device>
    <doc-device model="browser" [url="app.example.com"] [caption="…"]>…page content…</doc-device>

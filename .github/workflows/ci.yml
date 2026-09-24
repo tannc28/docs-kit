@@ -29,7 +29,10 @@ jobs:
       - name: JavaScript parses
         run: for f in doc.js components/*.js; do node --check "$f"; done
 
-      - name: Gallery renders every component
+      - name: The assistant reference (llms.txt, llms-full.txt) matches the code
+        run: python3 bin/build-llms.py --check
+
+      - name: Gallery and example pages render every component
         run: bash bin/gallery-check.sh
 
   release:

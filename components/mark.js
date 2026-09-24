@@ -1,4 +1,5 @@
-/* <doc-mark [type="highlight|underline|circle|box|bracket|strike-through|crossed-off"] [tone="mark|accent|accent2|ok|warn|bad"]>
+/* doc-mark — a hand-drawn highlight, underline, circle or box on a phrase.
+   <doc-mark [type="highlight|underline|circle|box|bracket|strike-through|crossed-off"] [tone="mark|accent|accent2|ok|warn|bad"]>
      the words to annotate
    </doc-mark>
    A hand-drawn annotation over inline text (Rough Notation, MIT), drawn when it scrolls into view — the way a

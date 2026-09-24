@@ -92,42 +92,6 @@
       ]
     },
     {
-      "name": "viewerjs",
-      "version": "1.14.0",
-      "license": "MIT",
-      "purpose": "image zoom and pan",
-      "files": [
-        {
-          "url": "https://cdn.jsdelivr.net/npm/viewerjs@1.14.0/dist/viewer.min.js",
-          "to": "viewer.min.js",
-          "sha256": "2fe8ef0a76c95ccce4b4fc87259c964a80f5177d18fc34ce386488e87d37ec76"
-        },
-        {
-          "url": "https://cdn.jsdelivr.net/npm/viewerjs@1.14.0/dist/viewer.min.css",
-          "to": "viewer.min.css",
-          "sha256": "9837f4b0f88791d527991078db790ca4adfadbaddece9242cbfc55f42c2c0a9d"
-        }
-      ]
-    },
-    {
-      "name": "floating-ui",
-      "version": "1.8.0",
-      "license": "MIT",
-      "purpose": "tooltip / popover positioning (load core before dom)",
-      "files": [
-        {
-          "url": "https://cdn.jsdelivr.net/npm/@floating-ui/core@1.8.0/dist/floating-ui.core.umd.min.js",
-          "to": "floating-ui.core.umd.min.js",
-          "sha256": "65940d866a6b6d831394a4bbed99ed0a39330bac98b643386d9a2f87a1a1d5da"
-        },
-        {
-          "url": "https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.8.0/dist/floating-ui.dom.umd.min.js",
-          "to": "floating-ui.dom.umd.min.js",
-          "sha256": "61a46f943c4e99379eaf073447811aec7e8b8f120d2f646316e01b7694bc90a3"
-        }
-      ]
-    },
-    {
       "name": "cytoscape",
       "version": "3.34.3",
       "license": "MIT",
@@ -299,19 +263,6 @@
           "url": "https://cdn.jsdelivr.net/npm/lucide@1.46.0/dist/umd/lucide.min.js",
           "to": "lucide.min.js",
           "sha256": "621aebb75317335da861ecaaf91faca006e60cdf6230d094804e12dfa8260301"
-        }
-      ]
-    },
-    {
-      "name": "animejs",
-      "version": "4.5.0",
-      "license": "MIT",
-      "purpose": "animation timelines / stagger / SVG helpers (optional)",
-      "files": [
-        {
-          "url": "https://cdn.jsdelivr.net/npm/animejs@4.5.0/dist/bundles/anime.umd.min.js",
-          "to": "anime.umd.min.js",
-          "sha256": "8d5b3a58a1f64023a04a4cedeef135a2263b18da04b35177ac13438a0bad033b"
         }
       ]
     },
@@ -489,6 +440,42 @@
           "url": "https://cdn.jsdelivr.net/npm/rough-notation@0.5.1/LICENSE",
           "to": "LICENSE",
           "sha256": "e9754a00aebde654e80f40bcf41dab667d6a41dfbbd2912bcf14fb07d468bf71"
+        }
+      ]
+    },
+    {
+      "name": "marked",
+      "version": "18.0.14",
+      "license": "MIT",
+      "purpose": "Markdown to HTML (doc-md, text/markdown blocks)",
+      "files": [
+        {
+          "url": "https://cdn.jsdelivr.net/npm/marked@18.0.14/lib/marked.umd.js",
+          "to": "marked.umd.js",
+          "sha256": "21568877a938d2c4e7d74e27f18e60da96bb73a68809610ca39216e1efebae62"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/marked@18.0.14/LICENSE",
+          "to": "LICENSE",
+          "sha256": "8e3a3f82f59a60958f56ca08f445647c32a4733dc7ca6c2c46f6eb898471ab9c"
+        }
+      ]
+    },
+    {
+      "name": "papaparse",
+      "version": "5.7.0",
+      "license": "MIT",
+      "purpose": "CSV/TSV parsing (doc-table, doc-chart data)",
+      "files": [
+        {
+          "url": "https://cdn.jsdelivr.net/npm/papaparse@5.7.0/papaparse.min.js",
+          "to": "papaparse.min.js",
+          "sha256": "4d5d2d6e3282b66aafaa5e6de8ca3ae06f8d3440111ae99c6a30f6c00cfac33e"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/npm/papaparse@5.7.0/LICENSE",
+          "to": "LICENSE",
+          "sha256": "99aa68e4b42758b09828a46515f70369e5463458ab7a990189f641af2b8d9b4e"
         }
       ]
     }

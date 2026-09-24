@@ -1,4 +1,5 @@
-/* <doc-term def="Sending the same request twice has the same effect as sending it once">idempotent</doc-term>
+/* doc-term, doc-glossary — terms with a definition on hover, and a glossary of every term on the page.
+   <doc-term def="Sending the same request twice has the same effect as sending it once">idempotent</doc-term>
      → dotted term; the definition appears on hover or keyboard focus.
    <doc-glossary></doc-glossary>
      → lists every doc-term on the page, first definition wins, sorted with the page language's collation (<html lang>). */

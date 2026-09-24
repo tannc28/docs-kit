@@ -1,4 +1,5 @@
-/* <doc-steps [autoplay] [interval="4"] [for="#diagram"]>
+/* doc-steps — a step-by-step explanation with a stepper, player and highlights.
+   <doc-steps [autoplay] [interval="4"] [for="#diagram"]>
      <section data-title="Submit the form" data-highlight="#form, .submit">…</section>
      <section data-title="Save the order">…</section>
    </doc-steps>

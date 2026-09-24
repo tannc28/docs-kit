@@ -1,4 +1,5 @@
-/* <doc-figure src="screen.png" caption="Checkout screen" [alt="…"]>
+/* doc-figure — an image or SVG with numbered pins and notes, click to zoom.
+   <doc-figure src="screen.png" caption="Checkout screen" [alt="…"]>
      <doc-pin x="32%" y="40%" title="Pay button">A note, HTML allowed.</doc-pin>
    </doc-figure>
    Instead of src, the first non-pin child (<img>, <svg>, any element) is the media.

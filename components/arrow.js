@@ -1,4 +1,5 @@
-/* <doc-arrow from="#a" to="#b" [label="Kafka"] [tone="ok|warn|bad|info"] [dashed] [flow]></doc-arrow>
+/* doc-arrow — a curved arrow between any two elements on the page, optionally animated.
+   <doc-arrow from="#a" to="#b" [label="Kafka"] [tone="ok|warn|bad|info"] [dashed] [flow]></doc-arrow>
    Curved arrow between two elements anywhere on the page (cards, mock parts, table cells), drawn on one shared
    overlay. Redraws on resize, after diagrams render and after clicks (tabs, steps, the TOC move things).
    Hidden while either end is not visible. `flow` animates dashes toward the target. */

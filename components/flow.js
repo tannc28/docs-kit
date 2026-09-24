@@ -1,4 +1,5 @@
-/* <doc-flow [cols="4"] [autoplay] [interval="3.2"] [caption="…"]>
+/* doc-flow — a system map where a packet travels hop by hop, one step at a time.
+   <doc-flow [cols="4"] [autoplay] [interval="3.2"] [caption="…"]>
      <doc-node key="web" title="Web app" [kind="user|service|db|queue|device|external"] [at="1,2"]>Short description, HTML allowed</doc-node>
      <doc-hop from="web" to="api" label="GET /orders">What happens at this hop (HTML).</doc-hop>
    </doc-flow>

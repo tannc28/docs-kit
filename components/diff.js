@@ -1,4 +1,5 @@
-/* <doc-diff file="application.yaml" [mode="line"] [context="3"]>
+/* doc-diff — a before/after diff of two texts, side by side or unified.
+   <doc-diff file="application.yaml" [mode="line"] [context="3"]>
      <script type="text/plain" data-before>…old text…</script>
      <script type="text/plain" data-after>…new text…</script>
    </doc-diff>

@@ -1,4 +1,5 @@
-/* <doc-zoom [height="480"]> …large content: pre.mermaid, <svg>, <img>, a wide mock… </doc-zoom>
+/* doc-zoom — pan and zoom around a large diagram or image.
+   <doc-zoom [height="480"]> …large content: pre.mermaid, <svg>, <img>, a wide mock… </doc-zoom>
    Drag to pan, Ctrl + wheel or the buttons to zoom, "Reset" to reset. Plain wheel still scrolls the page. */
 (() => {
   class DocZoom extends HTMLElement {

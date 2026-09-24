@@ -1,4 +1,5 @@
-/* <doc-sketch [roughness="1.3"] [fill-style="hachure|solid|zigzag|cross-hatch|dots"]>
+/* doc-sketch — redraws a plain SVG in a hand-drawn style.
+   <doc-sketch [roughness="1.3"] [fill-style="hachure|solid|zigzag|cross-hatch|dots"]>
      <svg viewBox="0 0 400 200"> plain <rect> <line> <circle> <ellipse> <polygon> <polyline> <path> and <text> </svg>
    </doc-sketch>
    Redraws the shapes in a hand-drawn style (Rough.js) — low-fidelity mocks and whiteboard diagrams.

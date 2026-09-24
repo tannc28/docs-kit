@@ -164,6 +164,18 @@ flowchart LR
 }</script>
     </doc-chart>
 
+    <p class="small">The same kind of chart from CSV — a type plus data, no ECharts option to write:</p>
+    <doc-chart type="line" title="Orders and failed payments" height="280">
+<script type="text/csv">
+Hour,Orders,Failed
+08,40,1
+09,96,2
+10,120,31
+11,88,4
+12,140,2
+</script>
+    </doc-chart>
+
     <h2 id="diff"><span class="num">12</span>doc-diff — before / after</h2>
     <doc-diff file="application.yaml">
 <script type="text/plain" data-before>
@@ -354,7 +366,36 @@ flowchart LR
     <p>Checkout latency fell from <doc-mark type="strike-through" tone="bad">820 ms</doc-mark> to <doc-mark type="circle">140 ms</doc-mark> once the <doc-mark>partial index</doc-mark> existed, and <doc-mark type="underline" tone="accent2">no query plan changed elsewhere</doc-mark>.</p>
     <p class="small muted">Types: highlight (default), underline, circle, box, bracket, strike-through, crossed-off. Drawn when scrolled into view.</p>
 
-    <h2 id="errors"><span class="num">25</span>Errors show inside the page</h2>
+    <h2 id="table"><span class="num">25</span>doc-table — a sortable table from CSV, TSV or JSON</h2>
+    <doc-table caption="Services — click a header to sort">
+<script type="text/csv">
+Service,Owner,Requests/min,p95 ms,Error rate
+order-service,Team A,1 240,140,0.2%
+payment-callback,Team B,310,820,2.1%
+email-worker,Team A,95,60,0.0%
+</script>
+    </doc-table>
+
+    <h2 id="markdown"><span class="num">26</span>Markdown — write the page, the kit draws the rest</h2>
+    <p class="small muted">A <code>&lt;script type="text/markdown"&gt;</code> block (or <code>&lt;doc-md&gt;</code>) renders before anything else, so its headings join the contents and its fences become components: <code>mermaid</code>, <code>chart &lt;type&gt;</code>, <code>table</code>/<code>csv</code>, <code>math</code>, any code language. GitHub alerts become callouts.</p>
+<script type="text/markdown">
+> [!TIP]
+> This block is Markdown. A table below needs no markup at all:
+
+| Status | Orders |
+|---|---|
+| PAID | 1 241 |
+| PENDING | 31 |
+
+```chart donut
+Status,Orders
+PAID,1241
+PENDING,31
+FAILED,12
+```
+</script>
+
+    <h2 id="errors"><span class="num">27</span>Errors show inside the page</h2>
     <doc-json>{ not JSON }</doc-json>
   </main>
 </div>

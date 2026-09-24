@@ -1,4 +1,5 @@
-/* <doc-map [height="440"] [basemap="openfreemap|none"] [autoplay] [interval="4"]>
+/* doc-map — a real interactive map from GeoJSON, with an optional camera tour.
+   <doc-map [height="440"] [basemap="openfreemap|none"] [autoplay] [interval="4"]>
      <script type="application/json">[
        { "type": "Feature", "properties": { "id": "park", "label": "Park" }, "geometry": { "type": "Polygon", "coordinates": [[…]] } },
        { "type": "Feature", "properties": { "id": "box", "derive": "bbox", "of": "park", "style": "outline", "tone": "warn" } },

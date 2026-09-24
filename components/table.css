@@ -1,0 +1,3 @@
+doc-table{display:block;margin:1rem 0}
+doc-table>.tbl,doc-table>.wide{margin:0}
+doc-table caption{caption-side:top;text-align:left;padding:.55rem .8rem;font-size:13px;color:var(--ink2)}

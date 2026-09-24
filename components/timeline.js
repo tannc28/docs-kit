@@ -1,4 +1,5 @@
-/* <doc-timeline [horizontal]>
+/* doc-timeline — a vertical or horizontal timeline of events.
+   <doc-timeline [horizontal]>
      <doc-event time="08:24" tone="ok|warn|bad|info" title="First entry">Details, HTML allowed.</doc-event>
    </doc-timeline>
    Vertical by default; events fade in as they scroll into view. `horizontal` scrolls sideways. */

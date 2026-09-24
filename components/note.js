@@ -1,4 +1,5 @@
-/* <doc-note for="#target" [title="…"] [tone="info|new|warn|bad"] [shape="ring|box|line"] [at="tr|tl|br|bl"]>
+/* doc-note — a numbered annotation badge on any element, with its note on hover or tap.
+   <doc-note for="#target" [title="…"] [tone="info|new|warn|bad"] [shape="ring|box|line"] [at="tr|tl|br|bl"]>
      Body HTML: mapping, code refs, why.
    </doc-note>
    An annotation on any element: a small numbered badge on the target's corner; hovering the badge or the target
