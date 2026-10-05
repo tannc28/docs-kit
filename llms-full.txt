@@ -76,6 +76,18 @@ HTML and `<doc-*>` tags work inside the Markdown block. The attribute reference 
 - **One static figure with numbered notes beats an animation.** Number the steps on the figure (`-->|"① call"|`, or
   `autonumber` in a sequence diagram) and explain each number in a list under it. Step-through players
   (`doc-steps`, `doc-flow`, `doc-scrolly`, `doc-seq`) are for the one flow too complex for a single picture.
+- **Short on the surface, detail one layer down.** A reader should get the point of every section from its first
+  screen: a heading, one or two sentences, then one figure, table or list. Anything the reader needs only to verify or
+  dig deeper goes behind a control instead of into the flow of the page:
+  - alternative views of the same thing (per environment, per role, before / after) → `doc-tabs`
+  - the inner working of one element on the page (a diagram node, a table row, a screenshot area) → `doc-drawer`
+  - a long list, full payload, raw log, edge case or side argument → `<details>`, `doc-json` or a footnote
+  - a number's source or a caveat → a footnote, not a sentence in the paragraph
+
+  Cut before you fold: a sentence that says nothing new is deleted, not hidden. A paragraph over about five lines, or
+  a section with no figure, table or list, is a sign something belongs one layer down. Hidden does not mean
+  optional: the drawer, tab or fold must be named so the reader knows what is inside (`title="Retry rules"`, not
+  `title="More"`).
 - **Data as data.** Put numbers in CSV (` ```chart `, ` ```table `) rather than formatting them by hand, so they
   stay sortable and chartable. Say where every number comes from.
 - **Nothing else to load.** No other CSS or JS frameworks: the kit covers colour, spacing, type and dark mode. Extra
