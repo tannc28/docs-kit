@@ -9,7 +9,9 @@
      no .page/main skeleton      -> content is wrapped in main + a sidebar TOC
      main h2, h3                 -> sidebar TOC + scrollspy + anchor links (ids generated from the text when missing)
      a bare <table> in main      -> styled; more than 5 columns becomes a wide table; headers sort
-     pre.mermaid                 -> Mermaid is loaded on demand
+     pre.mermaid                 -> Mermaid is loaded on demand; a diagram zooms in place with its slider, + / −, or
+                                 Ctrl + wheel (data-no-zoom opts out), and a tall one first fits the screen height
+                                 (data-full-height opts out)
      table[data-sortable]        -> click a header to sort
      .filters[data-target] .btn[data-filter] + [data-tags] -> tag filter
      input/textarea[name] in main -> saved to localStorage per file
@@ -53,17 +55,25 @@
     drawing: 'Drawing diagram…',
     filterRows: 'Filter rows…', rows: '{shown} / {total} rows', hideGroup: 'Hide {label}', expandHeight: 'Expand height',
     scrollLeft: 'Scroll left', scrollRight: 'Scroll right',
-    fit: 'Fit', zoomIn: 'Zoom in', zoomOut: 'Zoom out', reset: 'Reset', zoomHint: 'Drag to pan · Ctrl + wheel to zoom',
+    fit: 'Fit', zoomIn: 'Zoom in', zoomOut: 'Zoom out', reset: 'Reset', zoomHint: 'Drag to pan · Ctrl + wheel to zoom', zoomLevel: 'Zoom level',
     graphHint: 'Click a node to read its note.',
     expandAll: 'Expand all', collapseAll: 'Collapse all', copy: 'Copy', copied: '{what} copied',
+    openDetails: 'Open details: {title}', close: 'Close', maximize: 'Maximize', restoreSize: 'Restore size', resizePanel: 'Drag to resize',
     note: 'Note {n}', noTerms: 'No terms on this page yet.', before: 'Before', after: 'After',
     feedbackCopied: 'Feedback copied — paste it where it is needed', copyFailed: 'Copy failed', cleared: 'Cleared', theme: 'Theme: {t}',
   };
-  try {
-    const o = document.getElementById('doc-labels');
-    if (o) Object.assign(LABELS, JSON.parse(o.textContent));
-  } catch (e) { console.error('[docs] #doc-labels is not valid JSON:', e.message); }
-  const t = (key, vars = {}) => String(LABELS[key] ?? key).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? vars[k] : m));
+  // Read #doc-labels once the document is parsed: doc.js usually sits in <head>, above the labels block, so reading it
+  // when the script runs would find nothing and every override would be silently ignored.
+  let labelsRead = false;
+  function readLabels() {
+    if (labelsRead || document.readyState === 'loading') return;
+    labelsRead = true;
+    try {
+      const o = document.getElementById('doc-labels');
+      if (o) Object.assign(LABELS, JSON.parse(o.textContent));
+    } catch (e) { console.error('[docs] #doc-labels is not valid JSON:', e.message); }
+  }
+  const t = (key, vars = {}) => { readLabels(); return String(LABELS[key] ?? key).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? vars[k] : m)); };
 
   // ---------- icons: path data copied from Lucide 1.46.0 (ISC, vendor/lucide) so controls render synchronously,
   // without loading the 440 KB icon library for a handful of glyphs. Regenerate from the vendored file, don't hand-draw. ----------
@@ -87,6 +97,10 @@
     up: '<path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/>',
     menu: '<path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/>',
     search: '<path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>',
+    close: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    panel: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M15 3v18"/><path d="m10 15-3-3 3-3"/>',
+    maximize: '<path d="M15 3h6v6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/><path d="M9 21H3v-6"/>',
+    minimize: '<path d="m14 10 7-7"/><path d="M20 10h-6V4"/><path d="m3 21 7-7"/><path d="M4 14h6v6"/>',
   };
   const icon = name => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name] || ''}</svg>`;
   // <button class="btn"> with an icon; text is shown unless `iconOnly`, and is always the accessible name.
@@ -178,7 +192,7 @@
   function buildToc() {
     const main = $('main'); const toc = $('.toc nav');
     if (!main || !toc) return;
-    const hs = $$('h2, h3', main).filter(h => !h.closest('.uc, .card, details, doc-tabs, doc-steps'));
+    const hs = $$('h2, h3', main).filter(h => !h.closest('.uc, .card, details, doc-tabs, doc-steps, doc-drawer'));
     hs.forEach(h => {
       const id = ensureId(h);
       const a = document.createElement('a');
@@ -412,6 +426,10 @@
   let viewIO, nearIO;
   function schedule(el, job) {
     jobs.set(el, job);
+    // Content of a closed doc-drawer is display:none, and Mermaid, charts and maps measure while drawing: it loads
+    // when its drawer first opens, eager or not.
+    const drawer = el.closest('doc-drawer');
+    if (drawer && !drawer.isOpen) return drawer.addEventListener('doc-drawer:open', () => run(el), { once: true });
     if (EAGER) return run(el);
     viewIO ||= new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { viewIO.unobserve(e.target); nearIO.unobserve(e.target); run(e.target); } }));
     nearIO ||= new IntersectionObserver(es => es.forEach(e => {
@@ -423,17 +441,97 @@
     nearIO.observe(el);
   }
 
-  let mermaidQueue = Promise.resolve();
+  // Each block is rendered with an id the kit hands out. mermaid.run() names a diagram mermaid-<Date.now()>, so two
+  // blocks drawn within one millisecond (common with ?eager, and constant under headless virtual time) share an id and
+  // the second is drawn into the first one's SVG.
+  let mermaidQueue = Promise.resolve(), mermaidSeq = 0;
+  const decode = html => Object.assign(document.createElement('textarea'), { innerHTML: html }).value;
   function drawMermaid(nodes) {
-    mermaidQueue = mermaidQueue.then(() => mermaidLib()).then(m => m.run({ nodes })).then(() => {
-      nodes.forEach(b => b.hasAttribute('data-flow') && b.classList.add('flow'));
+    mermaidQueue = mermaidQueue.then(() => mermaidLib()).then(async m => {
+      for (const b of nodes) {
+        if (b.getAttribute('data-processed')) continue;
+        const src = decode(b.innerHTML).replace(/<br\s*\/?>/gi, '<br/>').trim();
+        b.setAttribute('data-processed', 'true');
+        try {
+          const { svg, bindFunctions } = await m.render(`mermaid-doc-${++mermaidSeq}`, src);
+          b.innerHTML = svg;
+          bindFunctions?.(b);
+          if (b.hasAttribute('data-flow')) b.classList.add('flow');
+          addDiagramZoom(b);
+        } catch (e) {
+          b.setAttribute('data-processed', 'error');  // show the source again rather than an empty box
+          console.error('[docs] mermaid', e);
+        }
+      }
       document.dispatchEvent(new Event('docs:rendered'));
-    }).catch(e => {
-      nodes.forEach(b => b.setAttribute('data-processed', 'error'));  // show the source again rather than an empty box
-      console.error('[docs] mermaid', e);
     });
     return mermaidQueue;
   }
+  // ---------- diagram zoom: every rendered Mermaid diagram zooms where it stands. The corner bar holds − [slider] +,
+  // the zoom in percent and ↺; Ctrl/⌘ + wheel (a trackpad pinch sends the same) zooms too, and the slider follows.
+  // A plain wheel keeps scrolling the page — a diagram up to 85vh tall would otherwise catch the page mid-scroll.
+  // Once zoomed, a drag pans inside the diagram. data-no-zoom opts out.
+  // Zoom runs 100-300%: the slider moves 1% at a time, + / − snap to the next 10%, each wheel notch is about 5%. ----------
+  const ZOOM_MAX = 3, ZOOM_BTN_STEP = 10, ZOOM_WHEEL_STEP = 0.15;
+  function addDiagramZoom(b) {
+    if (b.closest('doc-zoom, [data-no-zoom]')) return;
+    // The controls sit in the top right corner of the diagram's frame (figure .diagram) when it has one, on a strip
+    // of their own above the drawing.
+    const host = b.parentElement?.classList.contains('diagram') ? b.parentElement : b;
+    if (host.querySelector(':scope > .dk-zoombar')) return;
+    if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+    let pz = null, starting = null;
+    const bar = document.createElement('div');
+    bar.className = 'dk-zoombar';
+    bar.innerHTML = button('out', 'minus', t('zoomOut'), { iconOnly: true })
+      + `<input type="range" class="dk-zoomrange" min="100" max="${ZOOM_MAX * 100}" step="1" value="100" aria-label="${esc(t('zoomLevel'))}">`
+      + button('in', 'plus', t('zoomIn'), { iconOnly: true })
+      + '<output class="dk-zoompct">100%</output>'
+      + button('reset', 'reset', t('reset'), { iconOnly: true });
+    const range = bar.querySelector('.dk-zoomrange'), pct = bar.querySelector('.dk-zoompct'), resetBtn = bar.querySelector('[data-a="reset"]');
+    resetBtn.hidden = true;
+    rangeFill(range);
+    host.append(bar);
+    const show = scale => {
+      const v = Math.round(scale * 100);
+      range.value = String(v);
+      rangeFill(range);
+      pct.textContent = `${v}%`;
+      const on = scale > 1.01;
+      b.classList.toggle('dk-zoomed', on);
+      resetBtn.hidden = !on;
+      pz?.setOptions({ disablePan: !on });
+    };
+    const start = () => starting ||= lib('panzoom').then(() => {
+      const svg = b.querySelector(':scope > svg');
+      if (!svg || pz) return pz;
+      pz = window.Panzoom(svg, { canvas: true, minScale: 1, maxScale: ZOOM_MAX, step: ZOOM_WHEEL_STEP, disablePan: true, cursor: '', touchAction: 'pan-x pan-y' });
+      svg.addEventListener('panzoomchange', e => show(e.detail.scale));
+      return pz;
+    }).catch(() => null);
+    // The bar zooms around the middle of the diagram; zoomIn()/zoomOut() would zoom around its top left corner.
+    const zoomTo = scale => start().then(p => {
+      if (!p) return;
+      const r = b.getBoundingClientRect();
+      p.zoomToPoint(Math.min(ZOOM_MAX, Math.max(1, scale)), { clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 });
+    });
+    b.addEventListener('pointerenter', start, { once: true });
+    b.addEventListener('wheel', e => {
+      if (!e.ctrlKey && !e.metaKey) return;
+      e.preventDefault();
+      if (pz) pz.zoomWithWheel(e); else start().then(p => p?.zoomWithWheel(e));
+    }, { passive: false });
+    range.addEventListener('input', () => zoomTo(+range.value / 100));
+    bar.addEventListener('click', e => {
+      const a = e.target.closest('[data-a]')?.dataset.a;
+      // + / − land on the next multiple of 10%, so 153% goes to 160% or 150%.
+      const now = Math.round((pz ? pz.getScale() : 1) * 100);
+      if (a === 'in') zoomTo((Math.floor(now / ZOOM_BTN_STEP) + 1) * ZOOM_BTN_STEP / 100);
+      if (a === 'out') zoomTo((Math.ceil(now / ZOOM_BTN_STEP) - 1) * ZOOM_BTN_STEP / 100);
+      if (a === 'reset' && pz) { pz.reset({ animate: false }); show(1); }
+    });
+  }
+
   async function loadMermaid() {
     const blocks = $$('pre.mermaid');
     if (!blocks.length) return;
@@ -449,6 +547,7 @@
     'doc-math': 'math', 'doc-zoom': 'zoom', 'doc-sketch': 'sketch', 'doc-arrow': 'arrow',
     'doc-note': 'note', 'doc-flow': 'flow', 'doc-map': 'map', 'doc-device': 'device', 'doc-scrolly': 'scrolly', 'doc-mark': 'mark',
     'doc-table': 'table', 'doc-vega': 'vega', 'doc-openapi': 'openapi', 'doc-cast': 'cast', 'doc-cron': 'cron', 'doc-tour': 'tour',
+    'doc-drawer': 'drawer',
   };
   // Libraries a component needs, started together with the component's own file.
   const NEEDS = {
@@ -466,7 +565,7 @@
   };
   // Structural and light components load at once: the page layout depends on them and they carry no big library.
   const AT_ONCE = new Set(['doc-tabs', 'doc-steps', 'doc-scrolly', 'doc-note', 'doc-arrow', 'doc-term', 'doc-glossary', 'doc-tour',
-    'doc-flow', 'doc-mark', 'doc-compare', 'doc-figure', 'doc-timeline', 'doc-json', 'doc-table', 'doc-cron']);
+    'doc-flow', 'doc-mark', 'doc-compare', 'doc-figure', 'doc-timeline', 'doc-json', 'doc-table', 'doc-cron', 'doc-drawer']);
   const startedFiles = new Map(), startedLibs = new Map();
   function loadComponent(el) {
     const tag = el.tagName.toLowerCase();

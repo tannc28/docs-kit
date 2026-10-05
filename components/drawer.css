@@ -1,0 +1,52 @@
+/* doc-drawer — see components/drawer.js for the markup */
+doc-drawer{display:contents}
+
+.dd-target{cursor:pointer;transition:outline-color .15s}
+.dd-target:hover{outline:2px solid var(--accent);outline-offset:-2px}
+:is(th,td).dd-target{padding-right:2.2rem}
+.dd-open{position:absolute;top:4px;right:4px;z-index:2;display:inline-grid;place-items:center;width:1.5rem;height:1.5rem;padding:0;
+  border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink3);cursor:pointer;opacity:.75;
+  transition:opacity .15s,color .15s,border-color .15s}
+.dd-open .ico{width:14px;height:14px}
+.dd-target:hover .dd-open,.dd-open:focus-visible{opacity:1;color:var(--accent);border-color:var(--accent)}
+
+.dd-panel{position:fixed;inset:0 0 0 auto;margin:0;padding:0;width:min(var(--dd-w,560px),100vw);max-width:100vw;height:100dvh;max-height:100dvh;
+  border:0;border-left:1px solid var(--line);background:var(--panel);color:var(--ink);box-shadow:var(--shadow-6,0 10px 40px rgb(0 0 0 / .25));
+  flex-direction:column}
+.dd-panel[open]{display:flex}
+.dd-panel.dd-left{inset:0 auto 0 0;border-left:0;border-right:1px solid var(--line)}
+.dd-panel::backdrop{background:rgb(15 23 42 / .38)}
+.dd-panel.dd-max{width:100vw}
+.dd-panel.dd-resizing{animation:none!important;user-select:none}
+.dd-grip{position:absolute;top:0;bottom:0;left:0;width:9px;z-index:3;cursor:col-resize;touch-action:none}
+.dd-left .dd-grip{left:auto;right:0}
+.dd-grip::after{content:"";position:absolute;top:50%;left:3px;width:3px;height:48px;margin-top:-24px;border-radius:3px;background:var(--line);transition:background .15s}
+.dd-grip:hover::after,.dd-grip:focus-visible::after,.dd-resizing .dd-grip::after{background:var(--accent)}
+.dd-grip:focus-visible{outline:none}
+.dd-head{display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem .75rem 1.1rem;border-bottom:1px solid var(--line);background:var(--panel)}
+.dd-title{flex:1;font-weight:650;font-size:16px;line-height:1.3}
+.dd-body{flex:1;overflow:auto;padding:1rem 1.1rem 2rem;overscroll-behavior:contain}
+.dd-body > :first-child{margin-top:0}
+html.dd-lock{overflow:hidden}
+
+@keyframes dd-in-right{from{transform:translateX(100%)}to{transform:none}}
+@keyframes dd-in-left{from{transform:translateX(-100%)}to{transform:none}}
+@keyframes dd-in-up{from{transform:translateY(100%)}to{transform:none}}
+.dd-panel.dd-right[open]{animation:dd-in-right .22s var(--ease-3,ease-out)}
+.dd-panel.dd-left[open]{animation:dd-in-left .22s var(--ease-3,ease-out)}
+
+@media (max-width:640px){
+  .dd-grip,.dd-max-btn{display:none}
+  .dd-panel,.dd-panel.dd-left{inset:auto 0 0 0;width:100vw;height:auto;max-height:88dvh;border:0;border-top:1px solid var(--line);border-radius:14px 14px 0 0}
+  .dd-panel.dd-right[open],.dd-panel.dd-left[open]{animation:dd-in-up .22s var(--ease-3,ease-out)}
+}
+@media (prefers-reduced-motion:reduce){.dd-panel[open]{animation:none!important}}
+
+@media print{
+  .dd-open{display:none}
+  .dd-target{outline:0!important}
+  doc-drawer{display:block;margin:.8rem 0}
+  .dd-panel{display:block!important;position:static;width:auto;height:auto;max-height:none;box-shadow:none;border:1px solid var(--line);border-radius:8px}
+  .dd-close,.dd-max-btn,.dd-grip{display:none}
+  .dd-body{overflow:visible}
+}

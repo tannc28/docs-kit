@@ -396,3 +396,25 @@ dl.gloss dd{margin:0;color:var(--ink2)}
 }
 
 @media (prefers-reduced-motion:reduce){.dk-play.on{animation:none}.dk-track i,.dk-step b,.dk-sep{transition:none}}
+
+/* ---------- diagram zoom: + / − / ↺ in the top right corner of every rendered Mermaid diagram's frame, on a strip of
+   its own so it never covers the drawing (doc.js addDiagramZoom) ---------- */
+pre.mermaid{position:relative}
+/* A diagram taller than the screen first fits it (aspect kept); zooming shows the detail. */
+pre.mermaid > svg{max-height:85vh}
+pre.mermaid[data-full-height] > svg{max-height:none}
+pre.mermaid.dk-zoomed{overflow:hidden}
+pre.mermaid.dk-zoomed > svg{cursor:grab}
+pre.mermaid.dk-zoomed > svg:active{cursor:grabbing}
+:is(.diagram, pre.mermaid):has(> .dk-zoombar){padding-top:2.9rem}
+.dk-zoombar{position:absolute;top:.35rem;right:.35rem;z-index:2;display:flex;align-items:center;gap:.3rem;padding:.2rem .35rem;border:1px solid var(--line);
+  max-width:calc(100% - .7rem);box-sizing:border-box;
+  border-radius:9px;background:var(--panel);box-shadow:0 1px 3px rgb(0 0 0 / .1);font:13px var(--sans)}
+.dk-zoombar .btn.icon{width:1.75rem;height:1.75rem;padding:0;color:var(--accent)}
+.dk-zoombar .btn[hidden]{display:none}
+/* 12rem spreads 100-300% over the track (input.dk-zoomrange outranks the generic range width); in a narrow frame the slider gives up width so the bar never overflows. */
+.dk-zoombar input.dk-zoomrange{flex:0 1 12rem;width:12rem;min-width:4rem}
+.dk-zoombar > :not(.dk-zoomrange){flex:none}
+@media (max-width:480px){.dk-zoombar input.dk-zoomrange{flex-basis:7rem;width:7rem}}
+.dk-zoompct{min-width:2.9rem;text-align:right;font:600 12px var(--mono);color:var(--ink2);font-variant-numeric:tabular-nums}
+@media print{.dk-zoombar{display:none}}

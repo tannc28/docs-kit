@@ -1,6 +1,6 @@
 # docs-kit component reference
 
-Release v0.4.0. Generated from the component sources.
+Release v0.5.0. Generated from the component sources.
 
 ### doc-arrow
 
@@ -113,6 +113,25 @@ doc-diff — a before/after diff of two texts, side by side or unified.
 </doc-diff>
 Side-by-side by default, mode="line" for a unified view. The file extension picks the highlighting language.
 Write the text flush-left inside the scripts: indentation is kept as-is (it matters for YAML).
+```
+
+### doc-drawer
+
+```text
+doc-drawer — details for any element in a side panel, opened by clicking the element.
+<doc-drawer for="#target" title="…" [side="right|left"] [width="560px"] [id="…"]>
+  Body HTML: anything — doc-flow, pre.mermaid, doc-figure, a mock, notes, a table.
+</doc-drawer>
+The target (without `for`: the previous element sibling) gets a small open button in its corner, an outline on
+hover, and opens the drawer on click; links, buttons and inputs inside the target keep working (in a sortable
+table header, where a click sorts, only the corner button opens it). The panel is a
+modal <dialog>: Esc, the close button or a click outside closes it, and focus stays inside while it is open.
+One drawer is open at a time. The content loads when the drawer first opens, so Mermaid, charts and maps inside
+draw at their real size. `#<id>` in the URL opens the drawer with that id (default: drawer-<title slug>), so a
+link can point straight at it. Narrow screens get a bottom sheet; print shows the content where the tag stands.
+Drag the panel's inner edge (or press ← → on it) to resize — the width is remembered for the page — and the
+header button or a double-click on the edge maximizes it. Headings inside a drawer stay out of the contents sidebar.
+Events on the element: doc-drawer:open, doc-drawer:close. Methods: open(), close(), maximize(on); property isOpen.
 ```
 
 ### doc-figure

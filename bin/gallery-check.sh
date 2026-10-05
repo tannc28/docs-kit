@@ -28,6 +28,8 @@ need gallery "$(count 'maplibregl-canvas"')" 1 "doc-map created no MapLibre canv
 need gallery "$(count '<doc-table[^>]*><div class="[a-z]*"><table')" 1 "doc-table rendered no table"
 need gallery "$(count 'class="doc-md"')" 1 "the Markdown block was not rendered"
 need gallery "$(count 'class="marks"')" 1 "doc-vega drew no chart"
+need gallery "$(count 'class="dd-panel')" 2 "doc-drawer built no panel"
+need gallery "$(count 'class="dd-open"')" 2 "doc-drawer put no open button on its target"
 need gallery "$(count 'ap-player')" 1 "doc-cast created no player"
 need gallery "$(count 'class="dcron-say"')" 2 "doc-cron explained fewer than 2 expressions"
 need gallery "$(count 'Place an order')" 1 "doc-openapi rendered no operation"

@@ -14,7 +14,7 @@ Copy it exactly — the URL names a release that never changes:
 <html lang="en">
 <meta charset="utf-8">
 <title>Page title</title>
-<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.4.0/doc.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.5.0/doc.js"></script>
 
 <script type="text/markdown">
 # Page title
@@ -37,7 +37,7 @@ Inside Markdown, most tools are a fenced block: the word after the backticks pic
 
 | To show | In Markdown | In HTML |
 |---|---|---|
-| A flow, architecture, sequence, state machine, ER model, Gantt plan, mind map, timeline, quadrant, radar, treemap… | ` ```mermaid ` + Mermaid text | `<pre class="mermaid">` |
+| A flow, architecture, sequence, state machine, ER model, Gantt plan, mind map, timeline, quadrant, radar, treemap… | ` ```mermaid ` + Mermaid text; every diagram zooms in place (+ / − or Ctrl + wheel) | `<pre class="mermaid">` |
 | Numbers by category or over time | ` ```chart bar ` (or `line`, `area`, `hbar`, `pie`, `donut`, `scatter`), then CSV; first column = x axis. Add `stack`, `title="…"` after the type | `<doc-chart type="bar">` + CSV `<script>` |
 | Any other chart: heatmap, gauge, sankey, radar, calendar… | ` ```chart ` + an ECharts option (JSON) | `<doc-chart>` |
 | A chart that aggregates, bins, filters or facets raw rows itself | ` ```vega-lite ` + a Vega-Lite spec (JSON) | `<doc-vega>` (spec, then CSV) |
@@ -53,6 +53,7 @@ Inside Markdown, most tools are a fenced block: the word after the backticks pic
 | Before / after | `<doc-diff>` for text, `<doc-compare>` for anything side by side or as a slider | |
 | A screenshot with numbered notes | `<doc-figure src="…">` + `<doc-pin x="30%" y="40%" title="…">` | |
 | Notes on any element of the page | `<doc-note for="#id" title="…">` | |
+| Details of any element in a side panel, opened by clicking it | `<doc-drawer for="#id" title="…">` | |
 | A walk through the page, element by element | `<doc-tour>` + `<doc-stop for="#id" title="…">` | |
 | A payload | ` ```json ` for code, `<doc-json>` for a collapsible tree | |
 | A timeline of events | `<doc-timeline>` + `<doc-event time="…" title="…">`, or a Mermaid `timeline` | |

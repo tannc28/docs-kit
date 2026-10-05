@@ -458,7 +458,44 @@ paths:
       <doc-stop for="#cast" title="Terminal">Commands type themselves.</doc-stop>
     </doc-tour>
 
-    <h2 id="errors"><span class="num">32</span>Errors show inside the page</h2>
+    <h2 id="drawer"><span class="num">32</span>doc-drawer — details in a side panel, on click</h2>
+    <p>Click a card or a highlighted cell. The panel loads its content when it first opens, so the diagram inside draws at its real size.</p>
+    <div class="grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="card" id="dr-checkout"><h4>Checkout</h4><p class="small">cart → payment → order</p></div>
+      <div class="card" id="dr-refund"><h4>Refund</h4><p class="small">support → payment provider</p></div>
+      <div class="card"><h4>Loyalty points</h4><p class="small">no details yet</p></div>
+    </div>
+    <doc-drawer for="#dr-checkout" title="Checkout, end to end">
+      <pre class="mermaid">
+sequenceDiagram
+  autonumber
+  actor U as Shopper
+  participant W as Web app
+  participant P as Payment service
+  participant O as Order service
+  U->>W: Pay
+  W->>P: authorize(amount)
+  P-->>W: authorized
+  W->>O: create order
+  O-->>U: confirmation email
+</pre>
+      <ol class="notes">
+        <li>Authorization holds the amount; capture happens when the order ships.</li>
+        <li>The order is created only after authorization succeeds.</li>
+      </ol>
+    </doc-drawer>
+    <doc-drawer for="#dr-refund" title="Refund rules" width="440px">
+      <div class="tbl"><table>
+        <thead><tr><th>Case</th><th>Who approves</th><th>Deadline</th></tr></thead>
+        <tbody>
+          <tr><td>Item not delivered</td><td>Automatic</td><td>30 days</td></tr>
+          <tr><td>Damaged item</td><td>Support agent</td><td>14 days</td></tr>
+          <tr><td>Changed mind</td><td>Support lead</td><td>7 days</td></tr>
+        </tbody>
+      </table></div>
+    </doc-drawer>
+
+    <h2 id="errors"><span class="num">33</span>Errors show inside the page</h2>
     <doc-json>{ not JSON }</doc-json>
   </main>
 </div>
