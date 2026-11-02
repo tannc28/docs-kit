@@ -25,7 +25,7 @@
     const title = el.getAttribute('title');
     const base = { tooltip: { trigger: type === 'pie' || type === 'donut' ? 'item' : 'axis' }, ...(title ? { title: { text: title, left: 'center', textStyle: { fontSize: 14 } } } : {}) };
     if (type === 'pie' || type === 'donut') {
-      return { ...base, legend: { top: title ? 28 : 0, type: 'scroll' },
+      return { ...base, legend: { top: title ? 34 : 0, type: 'scroll' },
         series: [{ type: 'pie', radius: type === 'donut' ? ['45%', '70%'] : '70%', top: title ? 40 : 24,
           data: body.map(r => ({ name: r[0], value: num(r[1]) })) }] };
     }
@@ -38,8 +38,8 @@
       ...(el.hasAttribute('stack') ? { stack: 'total' } : {}),
     }));
     const catAxis = { type: 'category', data: cats }, valAxis = { type: 'value' };
-    return { ...base, legend: series.length > 1 ? { top: title ? 28 : 0 } : undefined,
-      grid: { left: 8, right: 16, top: (title ? 32 : 0) + (series.length > 1 ? 32 : 16), bottom: 8, containLabel: true },
+    return { ...base, legend: series.length > 1 ? { top: title ? 34 : 0 } : undefined,
+      grid: { left: 8, right: 16, top: (title ? 38 : 0) + (series.length > 1 ? 32 : 16), bottom: 8, containLabel: true },
       xAxis: type === 'hbar' ? valAxis : catAxis, yAxis: type === 'hbar' ? { ...catAxis, inverse: true } : valAxis, series };
   }
 

@@ -68,10 +68,10 @@
     <h2 id="figure"><span class="num">03</span>doc-figure — an image with numbered notes, click to zoom</h2>
     <doc-figure caption="Illustrative checkout layout — Alt+click the image to copy coordinates for a new pin">
       <svg viewBox="0 0 640 260" role="img" aria-label="Illustrative checkout layout">
-        <rect width="640" height="260" fill="#f1f5f9"/>
-        <rect x="30" y="30" width="370" height="200" rx="12" fill="#e0e7ff"/><text x="215" y="135" text-anchor="middle" font-size="16" fill="#3730a3">Shipping + payment form</text>
-        <rect x="430" y="30" width="180" height="140" rx="12" fill="#e0f2fe"/><text x="520" y="105" text-anchor="middle" font-size="16" fill="#075985">Order summary</text>
-        <rect x="430" y="190" width="180" height="40" rx="10" fill="#4f46e5"/><text x="520" y="216" text-anchor="middle" font-size="15" fill="#fff">Pay now</text>
+        <rect width="640" height="260" style="fill:var(--bg)"/>
+        <rect x="30" y="30" width="370" height="200" rx="12" style="fill:var(--accent-soft)"/><text x="215" y="135" text-anchor="middle" font-size="16" style="fill:var(--accent)">Shipping + payment form</text>
+        <rect x="430" y="30" width="180" height="140" rx="12" style="fill:var(--info-bg)"/><text x="520" y="105" text-anchor="middle" font-size="16" style="fill:var(--accent2)">Order summary</text>
+        <rect x="430" y="190" width="180" height="40" rx="10" style="fill:var(--accent)"/><text x="520" y="216" text-anchor="middle" font-size="15" style="fill:var(--on-accent)">Pay now</text>
       </svg>
       <doc-pin x="20%" y="30%" title="Address">Validated on blur; errors show inline.</doc-pin>
       <doc-pin x="81%" y="25%" title="Summary">Recomputed by the server, never trusted from the client.</doc-pin>
@@ -86,8 +86,8 @@ WHERE status = 'PENDING';   -- full scan</code></pre></div>
   ON orders (created_at) WHERE status = 'PENDING';</code></pre></div>
     </doc-compare>
     <doc-compare mode="slider" labels="Before|After">
-      <svg viewBox="0 0 640 180"><rect width="640" height="180" fill="#fef2f2"/><text x="320" y="100" text-anchor="middle" font-size="26" fill="#b91c1c">p95 820 ms</text></svg>
-      <svg viewBox="0 0 640 180"><rect width="640" height="180" fill="#ecfdf5"/><text x="320" y="100" text-anchor="middle" font-size="26" fill="#047857">p95 140 ms</text></svg>
+      <svg viewBox="0 0 640 180"><rect width="640" height="180" style="fill:var(--bad-bg)"/><text x="320" y="100" text-anchor="middle" font-size="26" style="fill:var(--bad)">p95 820 ms</text></svg>
+      <svg viewBox="0 0 640 180"><rect width="640" height="180" style="fill:var(--ok-bg)"/><text x="320" y="100" text-anchor="middle" font-size="26" style="fill:var(--ok)">p95 140 ms</text></svg>
     </doc-compare>
 
     <h2 id="tabs"><span class="num">05</span>doc-tabs — several views in one place</h2>
@@ -106,11 +106,15 @@ flowchart LR
       </section>
     </doc-tabs>
 
-    <h2 id="timeline"><span class="num">06</span>doc-timeline — a timeline</h2>
+    <h2 id="timeline"><span class="num">06</span>doc-timeline — compact by default, details open on click</h2>
     <doc-timeline>
-      <doc-event time="09:12" tone="bad" title="Checkout errors start">Payment callbacks time out after a deploy.</doc-event>
+      <doc-event time="09:12" tone="bad" title="Checkout errors start" open>Payment callbacks time out after a deploy.</doc-event>
       <doc-event time="09:20" tone="info" title="Alert fires">Error rate above 2% for 5 minutes.</doc-event>
       <doc-event time="09:31" tone="ok" title="Rolled back">Callbacks succeed again; stuck orders are replayed.</doc-event>
+    </doc-timeline>
+    <doc-timeline expanded>
+      <doc-event time="Day 1" tone="info" title="expanded: every event's details at once">For a short timeline whose details all matter.</doc-event>
+      <doc-event time="Day 2" tone="ok" title="Shipped">Behind a flag for one site.</doc-event>
     </doc-timeline>
     <doc-timeline horizontal>
       <doc-event time="v1.4" tone="info" title="Outbox">Events written in the order transaction.</doc-event>
@@ -255,7 +259,7 @@ flowchart LR
     </doc-sketch>
 
     <h2 id="arrow"><span class="num">18</span>doc-arrow — arrows between elements</h2>
-    <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:4rem">
+    <div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(1.2rem,6vw,4rem)">
       <div class="card" id="ar-api"><h4>order-service</h4><p class="small">writes the outbox</p></div>
       <div class="card" id="ar-kafka"><h4>Kafka</h4><p class="small">order.created</p></div>
       <div class="card" id="ar-mail"><h4>email worker</h4><p class="small">sends confirmations</p></div>
@@ -427,29 +431,22 @@ $ curl -s localhost:8080/health
     <p><doc-cron>30 9 * * 1-5</doc-cron></p>
     <p><doc-cron tz="UTC">50 * * * *</doc-cron></p>
 
-    <h2 id="openapi"><span class="num">30</span>doc-openapi — an API reference from an inline spec</h2>
-    <doc-openapi height="520">
-<script type="text/plain">
-openapi: 3.0.3
-info: { title: Orders API, version: "1.0" }
-paths:
-  /orders:
-    post:
-      summary: Place an order
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [items]
-              properties:
-                items: { type: array, items: { type: string } }
-                coupon: { type: string }
-      responses:
-        "201": { description: Created }
-        "409": { description: Same idempotency key, different body }
-</script>
-    </doc-openapi>
+    <h2 id="api"><span class="num">30</span>An HTTP API, briefly — a table, each row opens its details</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Endpoint</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr id="api-create"><td><span class="badge info">POST</span> <code>/orders</code></td><td>Place an order; the same idempotency key returns the first result</td></tr>
+        <tr id="api-get"><td><span class="badge info">GET</span> <code>/orders/{id}</code></td><td>Read one order with its payment state</td></tr>
+      </tbody>
+    </table></div>
+    <doc-drawer for="#api-create" title="POST /orders" width="460px">
+      <p>Request. <code>Idempotency-Key</code> header required.</p>
+      <doc-code lang="json"><script type="text/plain">{ "items": ["sku-12", "sku-40"], "coupon": "TET" }</script></doc-code>
+      <p>Responses: <span class="badge low">201</span> created · <span class="badge high">409</span> same key, different body.</p>
+    </doc-drawer>
+    <doc-drawer for="#api-get" title="GET /orders/{id}" width="460px">
+      <doc-code lang="json"><script type="text/plain">{ "id": "o-981", "status": "PAID", "total": 412000 }</script></doc-code>
+    </doc-drawer>
 
     <h2 id="tour"><span class="num">31</span>doc-tour — a guided walk through the page</h2>
     <doc-tour>

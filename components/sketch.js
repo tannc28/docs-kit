@@ -24,6 +24,16 @@
       const rc = rough.svg(svg);
       const base = { roughness: parseFloat(this.getAttribute('roughness')) || 1.3, bowing: 1.2, fillStyle: this.getAttribute('fill-style') || 'hachure', hachureGap: 6 };
       const ink = getComputedStyle(this).color;
+      // A light fill authored for a light page would hatch bright lines across the labels on a dark one: in dark mode
+      // it is mixed into the panel colour, keeping its hue.
+      const dark = Docs.theme() === 'dark', probe = document.createElement('i');
+      if (dark) this.append(probe);
+      const tone = c => {
+        const v = c && c.match(/[\d.]+/g);
+        if (!dark || !v || (0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]) / 255 < 0.6) return c;
+        probe.style.color = `color-mix(in srgb, ${c} 28%, var(--panel))`;
+        return getComputedStyle(probe).color;
+      };
       const shapes = [...svg.querySelectorAll('rect, line, circle, ellipse, polygon, polyline, path')]
         .filter(el => !el.closest('defs, marker, clipPath, mask, [data-keep]'));
       shapes.forEach((el, i) => {
@@ -32,7 +42,7 @@
           ...base, seed: i + 1,
           stroke: cs.stroke && cs.stroke !== 'none' ? cs.stroke : ink,
           strokeWidth: parseFloat(cs.strokeWidth) || 1.5,
-          fill: cs.fill && cs.fill !== 'none' && el.tagName !== 'line' && el.tagName !== 'polyline' ? cs.fill : undefined,
+          fill: cs.fill && cs.fill !== 'none' && el.tagName !== 'line' && el.tagName !== 'polyline' ? tone(cs.fill) : undefined,
         };
         let node;
         switch (el.tagName.toLowerCase()) {
@@ -49,6 +59,7 @@
         if (el.id) node.id = el.id;
         el.replaceWith(node);
       });
+      probe.remove();
     }
   }
 

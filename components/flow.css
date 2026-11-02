@@ -24,7 +24,7 @@ doc-flow.all .df-dot{display:none}
 .df-active{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-dasharray:6 5;animation:df-dash 1s linear infinite}
 @keyframes df-dash{to{stroke-dashoffset:-22}}
 .df-dot{fill:var(--accent);stroke:var(--bg);stroke-width:2.5;filter:drop-shadow(0 0 5px var(--accent))}
-.df-chip{position:absolute;z-index:3;transform:translate(-50%,-165%);max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--accent);color:#fff;font:600 11.5px/1.55 var(--mono);padding:.02rem .45rem;border-radius:6px;pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.df-chip{position:absolute;z-index:3;transform:translate(-50%,-165%);max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--accent);color:var(--on-accent);font:600 11.5px/1.55 var(--mono);padding:.02rem .45rem;border-radius:6px;pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,.18)}
 .df-caption{padding:0 1.1rem .4rem;text-align:center;font-size:12px;color:var(--ink3)}
 .df-panel{border-top:1px solid var(--line);padding:.8rem 1.1rem;min-height:5rem}
 .df-panel h4{margin:.1rem 0 .3rem;font-size:14px}

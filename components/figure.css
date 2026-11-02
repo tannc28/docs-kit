@@ -18,4 +18,5 @@ doc-figure{display:block;margin:1.2rem 0}
 .df-dialog .df-box{cursor:zoom-out}
 .df-dialog .df-box>img{max-height:90vh;width:auto}
 .df-dialog .df-box>svg{width:min(92vw,1400px);max-height:90vh}
+@media (max-width:640px){.df-dialog{overflow:auto;max-width:100vw;max-height:92dvh}.df-dialog .df-box{margin-top:3rem}.df-dialog .df-box>svg{width:max(100%,860px);max-width:none;max-height:none}.df-dialog .df-box>img{max-width:none;max-height:none}}
 @media (prefers-reduced-motion:reduce){.df-pin{animation:none}}

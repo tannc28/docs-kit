@@ -71,8 +71,8 @@ def build():
             lines.append(f"- [{tag}]({CDN}/components/{p.name}): {summary(p, header(p))}")
     short = "\n".join(lines) + "\n"
 
-    full = [pinned((KIT / "AGENTS.md").read_text(encoding="utf-8")).rstrip(), "", "## 5. Runtime (doc.js)", "", "```text",
-            header(KIT / "doc.js"), "```", "", "## 6. Component reference", ""]
+    full = [pinned((KIT / "AGENTS.md").read_text(encoding="utf-8")).rstrip(), "", "## 6. Runtime (doc.js)", "", "```text",
+            header(KIT / "doc.js"), "```", "", "## 7. Component reference", ""]
     for p in comps:
         full += [f"### {', '.join(tags[p])}", "", "```text", header(p), "```", ""]
     guide = pinned((KIT / "AGENTS.md").read_text(encoding="utf-8")).rstrip()
@@ -86,7 +86,7 @@ def build():
         "",
         guide,
         "",
-        "## 5. Component reference",
+        "## 6. Component reference",
         "",
         "Every `<doc-*>` element's attributes are in `reference.md` next to this file — read it when a page needs a component",
         "beyond the fences above. After writing a page, run `docs-kit-check <page.html>` (on the PATH while this plugin is",
@@ -95,7 +95,7 @@ def build():
         "",
     ])
     reference = "\n".join(["# docs-kit component reference", "", f"Release v{VERSION}. Generated from the component sources.", ""]
-                          + full[full.index("## 6. Component reference") + 2:]).rstrip() + "\n"
+                          + full[full.index("## 7. Component reference") + 2:]).rstrip() + "\n"
     return {"llms.txt": short, "llms-full.txt": "\n".join(full).rstrip() + "\n",
             "plugin/skills/docs-kit/SKILL.md": skill, "plugin/skills/docs-kit/reference.md": reference,
             "plugin/.claude-plugin/plugin.json": plugin_manifest(),

@@ -203,6 +203,7 @@
       if (instant || !total) {
         const p = this.active.getPointAtLength(total);
         this.moveTo(p.x, p.y);
+        this.chip.hidden = true;
         return;
       }
       const dur = Math.min(1300, 450 + total * 1.4), t0 = performance.now();
@@ -211,15 +212,23 @@
         const p = this.active.getPointAtLength(total * e);
         this.moveTo(p.x, p.y);
         if (t < 1) this.raf = requestAnimationFrame(step);
-        else this.pulse(target);
+        else { this.pulse(target); this.chip.hidden = true; }
       };
       this.raf = requestAnimationFrame(step);
     }
 
+    // The label rides with the packet while it travels and leaves when it lands: the step panel below already names
+    // the hop, and a parked label would sit on the destination node's title.
     moveTo(x, y) {
       this.dot.setAttribute('cx', x.toFixed(1));
       this.dot.setAttribute('cy', y.toFixed(1));
-      this.chip.style.left = `${x}px`;
+      this.placeChip(x, y);
+    }
+
+    // Centred on x, but kept inside the stage so a hop near the edge is not cut off.
+    placeChip(x, y) {
+      const half = this.chip.offsetWidth / 2, room = this.chip.offsetParent?.clientWidth || Infinity;
+      this.chip.style.left = `${Math.max(half + 4, Math.min(room - half - 4, x))}px`;
       this.chip.style.top = `${y}px`;
     }
 

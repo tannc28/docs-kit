@@ -2,3 +2,14 @@ doc-diff{display:block;margin:1.2rem 0}
 doc-diff .d2h-wrapper{font-size:12.5px}
 doc-diff .d2h-file-wrapper{border-color:var(--line);border-radius:var(--radius);margin-bottom:0}
 doc-diff .d2h-file-header{font-family:var(--mono)}
+/* Long lines wrap rather than being cut off: each code row is a flex row (sign, then code), inside diff2html's
+   own gutter for the line numbers, which is narrowed so a phone keeps most of its width for code. */
+doc-diff .d2h-code-line,doc-diff .d2h-code-side-line{display:flex;width:auto;white-space:normal}
+doc-diff .d2h-code-line{padding:0 .5em 0 6.4em}
+doc-diff .d2h-code-side-line{padding:0 .5em 0 3.7em}
+doc-diff .d2h-code-line-prefix{flex:none}
+doc-diff .d2h-code-line-ctn{flex:1;min-width:0;width:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:none}
+doc-diff .d2h-code-linenumber{width:6em;padding:0}
+doc-diff .line-num1,doc-diff .line-num2{width:50%;padding:0 .3em}
+doc-diff .d2h-code-side-linenumber{width:3.2em;padding:0 .4em}
+doc-diff .d2h-file-side-diff{overflow-x:auto}

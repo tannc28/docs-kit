@@ -19,7 +19,7 @@ Copy it exactly — the URL names a release that never changes:
 <html lang="en">
 <meta charset="utf-8">
 <title>Page title</title>
-<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.5.0/doc.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.6.0/doc.js"></script>
 
 <script type="text/markdown">
 # Page title
@@ -36,13 +36,30 @@ That is a complete page. Write everything inside the Markdown block; headings be
 be plain HTML after the `<script src>` line (`<h1>`, `<h2>`, `<p>`, `<table>`, `<doc-*>` tags) — no wrapper markup is
 needed either way. Set `lang` to the page's language.
 
-## 2. Pick the tool by what you need to show
+## 2. Shape the page first: tabs, compare, drawers, folds
+
+These four are the everyday layout of a page, not extras. Reach for them before adding another section, so the
+page stays short and the reader opens only what they need:
+
+| When the content is… | Use | Markup |
+|---|---|---|
+| Several items of the same kind, read side by side (one per cause, option, service, environment, role) | **`doc-tabs`**, one tab each, labelled by what differs | `<doc-tabs>` + `<section data-tab="…">` |
+| Two things the reader weighs against each other (before / after, A vs B, expected vs actual) | **`doc-compare`**, both in view at once | `<doc-compare labels="Before\|After">` + two children |
+| The inner working of one thing on the page (a diagram node, a table row, a term, a screen area) | **`doc-drawer`**, a side panel opened by clicking that thing | `<doc-drawer for="#id" title="…">` |
+| Evidence the reader only needs to check (raw output, a long list, a full payload, an edge case) | **a fold** | `<details><summary>…</summary>…</details>` |
+
+Whatever can sit side by side does — `doc-compare`, `.grid > .card`, `.mock-row`, a table — instead of stacking down
+the page; a section stacks after the previous one only when the reader must read them in order. And illustrate
+generously: every concept with a shape (a flow, a structure, a before / after, a screen) gets a picture, and the
+prose explains the picture.
+
+## 3. Pick the tool by what you need to show
 
 Inside Markdown, most tools are a fenced block: the word after the backticks picks the tool.
 
 | To show | In Markdown | In HTML |
 |---|---|---|
-| A flow, architecture, sequence, state machine, ER model, Gantt plan, mind map, timeline, quadrant, radar, treemap… | ` ```mermaid ` + Mermaid text; every diagram zooms in place (+ / − or Ctrl + wheel) | `<pre class="mermaid">` |
+| A flow, architecture, sequence, state machine, ER model, Gantt plan, mind map, timeline, quadrant, radar, treemap… | ` ```mermaid ` + Mermaid text; click a diagram to open it enlarged in a lightbox and zoom there | `<pre class="mermaid">` |
 | Numbers by category or over time | ` ```chart bar ` (or `line`, `area`, `hbar`, `pie`, `donut`, `scatter`), then CSV; first column = x axis. Add `stack`, `title="…"` after the type | `<doc-chart type="bar">` + CSV `<script>` |
 | Any other chart: heatmap, gauge, sankey, radar, calendar… | ` ```chart ` + an ECharts option (JSON) | `<doc-chart>` |
 | A chart that aggregates, bins, filters or facets raw rows itself | ` ```vega-lite ` + a Vega-Lite spec (JSON) | `<doc-vega>` (spec, then CSV) |
@@ -50,7 +67,7 @@ Inside Markdown, most tools are a fenced block: the word after the backticks pic
 | Code | ` ```python ` (any language): highlighted, with a copy button | `<doc-code lang="…">` |
 | A terminal session that replays | ` ```terminal ` + a transcript: lines starting with `$ ` are commands, the rest is output | `<doc-cast>` |
 | A cron schedule, explained | ` ```cron ` + one expression per line | `<doc-cron>0 3 * * *</doc-cron>` |
-| An HTTP API reference | ` ```openapi ` + an OpenAPI spec (YAML or JSON) | `<doc-openapi>` |
+| An HTTP API, briefly | a table, one row per endpoint: method, path, what it does; each row opens a `doc-drawer` with the request and response (` ```json ` or `<doc-json>`) | `<table>` + `<doc-drawer for="#row-id">` |
 | A formula | `$inline$`, or `$$` … `$$` on their own lines, or ` ```math ` | `<doc-math>` |
 | A warning, tip or key point | `> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`, `> [!CAUTION]` on the first line of a quote | `<div class="callout warn">` |
 | A source or side remark | a footnote: `text[^1]`, then `[^1]: the note` | — |
@@ -58,11 +75,9 @@ Inside Markdown, most tools are a fenced block: the word after the backticks pic
 | Before / after | `<doc-diff>` for text, `<doc-compare>` for anything side by side or as a slider | |
 | A screenshot with numbered notes | `<doc-figure src="…">` + `<doc-pin x="30%" y="40%" title="…">` | |
 | Notes on any element of the page | `<doc-note for="#id" title="…">` | |
-| Details of any element in a side panel, opened by clicking it | `<doc-drawer for="#id" title="…">` | |
 | A walk through the page, element by element | `<doc-tour>` + `<doc-stop for="#id" title="…">` | |
 | A payload | ` ```json ` for code, `<doc-json>` for a collapsible tree | |
-| A timeline of events | `<doc-timeline>` + `<doc-event time="…" title="…">`, or a Mermaid `timeline` | |
-| Several views in one place | `<doc-tabs>` + `<section data-tab="…">` | |
+| A timeline of events | `<doc-timeline>` + `<doc-event time="…" title="…">`: one line per event, details open on click; `expanded` only when every event's details must be read | |
 | A system graph laid out automatically | `<doc-graph>` (nodes/edges JSON) | |
 | A real map | `<doc-map>` (GeoJSON) | |
 | A phone, tablet, laptop or browser screen | `<doc-device model="iphone-14-pro">`, `model="browser"` | |
@@ -73,7 +88,7 @@ Inside Markdown, most tools are a fenced block: the word after the backticks pic
 HTML and `<doc-*>` tags work inside the Markdown block. The attribute reference of every component is the
 "Component reference" part of `llms-full.txt` (generated from each component's source); `gallery.html` runs them all.
 
-## 3. Rules that make pages good
+## 4. Rules that make pages good
 
 - **Markdown first.** It is the least code for the most page. Use HTML only where no fence fits.
 - **Never draw by hand what a tool draws.** No hand-written SVG, canvas or CSS charts: a fence or a component is
@@ -84,7 +99,10 @@ HTML and `<doc-*>` tags work inside the Markdown block. The attribute reference 
 - **Short on the surface, detail one layer down.** A reader should get the point of every section from its first
   screen: a heading, one or two sentences, then one figure, table or list. Anything the reader needs only to verify or
   dig deeper goes behind a control instead of into the flow of the page:
-  - alternative views of the same thing (per environment, per role, before / after) → `doc-tabs`
+  - siblings of one kind — items of the same concept at the same level, read side by side rather than in order (one
+    per cause, option, service, environment or role; before / after; the same thing in several views) → one
+    `doc-tabs`, one tab each, labelled by what differs between them. Stack sections only when the reader must read
+    them in sequence.
   - the inner working of one element on the page (a diagram node, a table row, a screenshot area) → `doc-drawer`
   - a long list, full payload, raw log, edge case or side argument → `<details>`, `doc-json` or a footnote
   - a number's source or a caveat → a footnote, not a sentence in the paragraph
@@ -106,7 +124,7 @@ HTML and `<doc-*>` tags work inside the Markdown block. The attribute reference 
 - **Labels.** Control labels are English. A page in another language can relabel them with
   `<script type="application/json" id="doc-labels">{"toc": "…"}</script>` (keys at the top of `doc.js`).
 
-## 4. Classes worth knowing
+## 5. Classes worth knowing
 
 - Callout: `<div class="callout why|idea|data|ok|warn|risk"><div class="ct">Label</div>…</div>`
 - Badge: `<span class="badge high|med|low|info|idea">…</span>`
@@ -115,7 +133,7 @@ HTML and `<doc-*>` tags work inside the Markdown block. The attribute reference 
 - Muted and small text: `.muted`, `.small`; a page intro paragraph right after the title becomes the lede
 - Questions for the reader: `.decision` blocks and `ul.checklist`; `[data-action="export"]` copies the answers
 
-## 5. Component reference
+## 6. Component reference
 
 Every `<doc-*>` element's attributes are in `reference.md` next to this file — read it when a page needs a component
 beyond the fences above. After writing a page, run `docs-kit-check <page.html>` (on the PATH while this plugin is

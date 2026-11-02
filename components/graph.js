@@ -9,6 +9,7 @@
    external, user, other — each gets its own shape and colour, listed in the legend. Click a node to read its note.
    Page scroll is never captured; zoom with the buttons. */
 (() => {
+  const NARROW = 560;   // px: a box narrower than this lays the graph out top to bottom
   const SHAPES = { service: 'round-rectangle', db: 'barrel', queue: 'cut-rectangle', device: 'rectangle', external: 'hexagon', user: 'ellipse', other: 'round-rectangle' };
   const TONES = { service: '--accent2', db: '--ok', queue: '--warn', device: '--ink2', external: '--idea', user: '--accent', other: '--ink3' };
   let registered = false;
@@ -43,6 +44,8 @@
       this.querySelector('.dgraph-legend').innerHTML = groups
         .map(g => `<span><i style="border-color:${v(TONES[g] || TONES.other)}"></i>${Docs.esc(g)}</span>`).join('');
       const labelWidth = n => Math.max(90, Math.min(200, (n.data('label') || '').length * 7.4 + 28));
+      const layoutFor = width => ({ name: registered ? 'dagre' : 'breadthfirst', directed: true, padding: 24, nodeSep: 40, rankSep: 90, edgeSep: 16,
+        rankDir: (this.getAttribute('direction') || 'LR') === 'LR' && width < NARROW ? 'TB' : (this.getAttribute('direction') || 'LR') });
       const cy = cytoscape({
         container: box,
         elements: [
@@ -55,7 +58,7 @@
           { selector: 'edge[?dashed]', style: { 'line-style': 'dashed' } },
           { selector: ':selected', style: { 'border-width': 4, 'border-color': v('--accent'), 'line-color': v('--accent'), 'target-arrow-color': v('--accent') } },
         ],
-        layout: { name: registered ? 'dagre' : 'breadthfirst', rankDir: this.getAttribute('direction') || 'LR', nodeSep: 40, rankSep: 90, edgeSep: 16, padding: 24, directed: true },
+        layout: layoutFor(box.clientWidth),
         userZoomingEnabled: false,
         boxSelectionEnabled: false,
       });
@@ -72,7 +75,15 @@
         if (a === 'in') cy.zoom({ level: cy.zoom() * 1.25, renderedPosition: center() });
         if (a === 'out') cy.zoom({ level: cy.zoom() / 1.25, renderedPosition: center() });
       });
-      new ResizeObserver(() => { cy.resize(); cy.fit(undefined, 24); }).observe(box);
+      // A left-to-right graph in a phone-wide box becomes a thin strip of tiny labels: below NARROW px it is laid out
+      // top to bottom instead, and back when the box widens.
+      let narrow = box.clientWidth < NARROW;
+      new ResizeObserver(() => {
+        cy.resize();
+        const now = box.clientWidth < NARROW;
+        if (now !== narrow && (this.getAttribute('direction') || 'LR') === 'LR') { narrow = now; cy.layout(layoutFor(box.clientWidth)).run(); }
+        cy.fit(undefined, 24);
+      }).observe(box);
       this.cy = cy;
     }
   }

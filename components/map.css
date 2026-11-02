@@ -9,7 +9,7 @@ doc-view{display:none}
 .dmap-body>:first-child{margin-top:0}
 .dmap-body>:last-child{margin-bottom:0}
 /* point markers: a dot in the feature's tone (--dmap-c) + an optional label chip */
-.dmap-pt{position:relative;display:flex;align-items:center;gap:.35rem;pointer-events:none}
+.dmap-pt{display:flex;align-items:center;gap:.35rem;pointer-events:none}
 .dmap-pt i{position:relative;display:block;width:14px;height:14px;border-radius:50%;border:2.5px solid #fff;background:var(--dmap-c);box-shadow:0 1px 4px rgba(0,0,0,.35)}
 .dmap-pt span{position:absolute;left:18px;white-space:nowrap;font:600 11.5px/1.5 var(--sans);color:#0f172a;background:rgba(255,255,255,.94);padding:0 .4rem;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .dmap-pulse i::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:2px solid var(--dmap-c);opacity:0;animation:dmap-pulse 1.8s ease-out infinite}

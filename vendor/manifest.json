@@ -522,42 +522,6 @@
       ]
     },
     {
-      "name": "js-yaml",
-      "version": "5.4.2",
-      "license": "MIT",
-      "purpose": "YAML parsing (OpenAPI specs, data)",
-      "files": [
-        {
-          "url": "https://cdn.jsdelivr.net/npm/js-yaml@5.4.2/dist/browser/js-yaml.umd.min.js",
-          "to": "js-yaml.umd.min.js",
-          "sha256": "774fe802006763599e1faadd17d562ff781bb7849b66a42ac745f227d4833f02"
-        },
-        {
-          "url": "https://cdn.jsdelivr.net/npm/js-yaml@5.4.2/LICENSE",
-          "to": "LICENSE",
-          "sha256": "a07bc24468b9654ce76a547d47a2db282d07733b715db4c73a98bd63961f9550"
-        }
-      ]
-    },
-    {
-      "name": "redoc",
-      "version": "2.5.4",
-      "license": "MIT",
-      "purpose": "OpenAPI reference (doc-openapi)",
-      "files": [
-        {
-          "url": "https://cdn.jsdelivr.net/npm/redoc@2.5.4/bundles/redoc.standalone.js",
-          "to": "redoc.standalone.js",
-          "sha256": "dcaf76612bc4a3fbcc923a8966dee2f6146a5f32e5ce1b6f02dd60cbbf89500b"
-        },
-        {
-          "url": "https://cdn.jsdelivr.net/npm/redoc@2.5.4/LICENSE",
-          "to": "LICENSE",
-          "sha256": "d3026d549cf68ab7355bcfa85877bf8f845b3334a7efbfdc63936432fb34ff0e"
-        }
-      ]
-    },
-    {
       "name": "asciinema-player",
       "version": "3.17.0",
       "license": "Apache-2.0",

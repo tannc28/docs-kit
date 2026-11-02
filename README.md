@@ -13,7 +13,7 @@ Save this as `page.html` and open it:
 <html lang="en">
 <meta charset="utf-8">
 <title>Checkout service</title>
-<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.5.0/doc.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.6.0/doc.js"></script>
 
 <script type="text/markdown">
 # Checkout service
@@ -61,7 +61,6 @@ In Markdown, a fenced block picks the tool by the word after the backticks:
 | ` ```table ` / ` ```csv ` / ` ```tsv ` | a sortable table |
 | ` ```terminal ` | a terminal session that replays (lines starting with `$ ` are commands) |
 | ` ```cron ` | cron expressions explained in English |
-| ` ```openapi ` + YAML or JSON | a full API reference |
 | ` ```math ` | a LaTeX formula (also `$inline$` and `$$ … $$`) |
 | ` ```python ` (any language) | highlighted code with a copy button |
 
@@ -72,14 +71,14 @@ For everything else there are `<doc-*>` elements, usable inside the Markdown or 
 with numbered pins), `doc-note` (annotation badge on any element), `doc-drawer` (details of any element in a side panel, on click), `doc-tour` (guided walk through the page),
 `doc-compare`, `doc-diff`, `doc-json`, `doc-tabs`, `doc-timeline`, `doc-graph`, `doc-map`, `doc-device`,
 `doc-term`, `doc-mark`, `doc-icon`, `doc-steps`, `doc-flow`, `doc-scrolly`, `doc-seq`, `doc-zoom`, `doc-sketch`,
-`doc-arrow`, `doc-code`, `doc-math`, `doc-table`, `doc-chart`, `doc-vega`, `doc-cast`, `doc-cron`, `doc-openapi`.
+`doc-arrow`, `doc-code`, `doc-math`, `doc-table`, `doc-chart`, `doc-vega`, `doc-cast`, `doc-cron`.
 Each file in `components/` starts with its full attribute reference.
 
 ## For AI assistants
 
 Give the assistant this line with the task:
 
-> Write the page as one HTML file with docs-kit. Follow https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.5.0/llms-full.txt
+> Write the page as one HTML file with docs-kit. Follow https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.6.0/llms-full.txt
 
 - [`llms.txt`](llms.txt) — the short index ([llmstxt.org](https://llmstxt.org) format)
 - [`llms-full.txt`](llms-full.txt) — the page template, which tool to use for what, the rules for a good page, and
@@ -139,7 +138,7 @@ fetched from the network — except map tiles for `doc-map`.
 ## Libraries
 
 Mermaid, Apache ECharts, Vega-Lite, Cytoscape.js (+ dagre), highlight.js, KaTeX, marked (+ footnote and KaTeX
-extensions), PapaParse, js-yaml, Redoc, asciinema-player, cronstrue, driver.js, CountUp.js, MapLibre GL, Turf,
+extensions), PapaParse, asciinema-player, cronstrue, driver.js, CountUp.js, MapLibre GL, Turf,
 Rough.js, Rough Notation, Scrollama, diff2html (+ jsdiff), Lucide, devices.css, Open Props, Inter, JetBrains Mono.
 All MIT, ISC, BSD, Apache-2.0, CC0 or OFL; each license file is vendored next to the library.
 

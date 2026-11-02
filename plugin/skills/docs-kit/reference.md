@@ -1,6 +1,6 @@
 # docs-kit component reference
 
-Release v0.5.0. Generated from the component sources.
+Release v0.6.0. Generated from the component sources.
 
 ### doc-arrow
 
@@ -107,11 +107,14 @@ a URL bar instead. Put several in a <div class="device-row"> to show them side b
 
 ```text
 doc-diff — a before/after diff of two texts, side by side or unified.
-<doc-diff file="application.yaml" [mode="line"] [context="3"]>
+<doc-diff file="application.yaml" [mode="line"] [context="3"] [start="120"]>
   <script type="text/plain" data-before>…old text…</script>
   <script type="text/plain" data-after>…new text…</script>
 </doc-diff>
-Side-by-side by default, mode="line" for a unified view. The file extension picks the highlighting language.
+Side-by-side by default; below about 640px of width it switches itself to the unified view, where two columns would
+not fit, and back when there is room again. mode="line" asks for the unified view always.
+start = the line number of the excerpt's first line in the real file, so the numbers match the file (default 1).
+Long lines wrap instead of being cut. The file extension picks the highlighting language.
 Write the text flush-left inside the scripts: indentation is kept as-is (it matters for YAML).
 ```
 
@@ -253,25 +256,6 @@ Without `for`, it annotates its previous element sibling. Numbers follow documen
 The target gets position:relative when it is static. Several notes on one target stack their markers.
 ```
 
-### doc-openapi
-
-```text
-doc-openapi — a full API reference (endpoints, parameters, schemas, examples) from an OpenAPI spec written inline.
-<doc-openapi [height="720"]>
-  <script type="text/plain">
-    openapi: 3.0.3
-    info: { title: Orders API, version: "1.0" }
-    paths:
-      /orders:
-        post:
-          summary: Place an order
-          responses: { "201": { description: Created } }
-  </script>
-</doc-openapi>
-The spec is YAML or JSON (OpenAPI 2 or 3), inline — nothing is fetched, so it works from file://. Rendered by
-Redoc inside a scrolling box of `height` pixels. In Markdown: ```openapi.
-```
-
 ### doc-scrolly
 
 ```text
@@ -372,11 +356,14 @@ doc-term, doc-glossary — terms with a definition on hover, and a glossary of e
 ### doc-timeline
 
 ```text
-doc-timeline — a vertical or horizontal timeline of events.
-<doc-timeline [horizontal]>
-  <doc-event time="08:24" tone="ok|warn|bad|info" title="First entry">Details, HTML allowed.</doc-event>
+doc-timeline — a timeline of events, compact by default.
+<doc-timeline [expanded] [horizontal]>
+  <doc-event time="08:24" tone="ok|warn|bad|info" title="First entry" [open]>Details, HTML allowed.</doc-event>
 </doc-timeline>
-Vertical by default; events fade in as they scroll into view. `horizontal` scrolls sideways.
+Compact (default): one line per event — dot, time, title — so the whole sequence reads at a glance; an event with
+details gets a chevron and opens them in place on click (Enter/Space). `open` starts one event opened.
+`expanded` shows every event's details at once, fading in as they scroll into view. `horizontal` lays the events
+out sideways as cards (details always shown) and scrolls.
 ```
 
 ### doc-tour

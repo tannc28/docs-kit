@@ -9,7 +9,7 @@
 @font-face{font-family:"JetBrains Mono Variable";font-style:normal;font-display:swap;font-weight:100 900;src:url("vendor/jetbrains-mono/5.3.0/jetbrains-mono-vietnamese-wght-normal.woff2") format("woff2-variations");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
 :root{
   --bg:#f7f8fa; --panel:#ffffff; --ink:#0f172a; --ink2:#475569; --ink3:#64748b;
-  --line:#e2e8f0; --accent:#4f46e5; --accent2:#0284c7; --ok:#059669; --warn:#b45309; --bad:#dc2626;
+  --line:#e2e8f0; --accent:#4f46e5; --on-accent:#fff; --accent2:#0284c7; --ok:#059669; --warn:#b45309; --bad:#dc2626;
   --ok-bg:#ecfdf5; --warn-bg:#fffbeb; --bad-bg:#fef2f2; --info-bg:#eff6ff; --idea-bg:#f5f3ff; --idea:#7c3aed;
   --code:#f1f5f9; --mark:#fef08a; --shadow:var(--shadow-3);
   --mono:"JetBrains Mono Variable",ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
@@ -22,7 +22,7 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#0b0f17; --panel:#111827; --ink:#e5e7eb; --ink2:#a1a1aa; --ink3:#7c8594;
-    --line:#1f2937; --accent:#818cf8; --accent2:#38bdf8; --ok:#34d399; --warn:#fbbf24; --bad:#f87171;
+    --line:#1f2937; --accent:#818cf8; --on-accent:#0b1020; --accent2:#38bdf8; --ok:#34d399; --warn:#fbbf24; --bad:#f87171;
     --ok-bg:rgba(52,211,153,.12); --warn-bg:rgba(251,191,36,.12); --bad-bg:rgba(248,113,113,.12); --info-bg:rgba(56,189,248,.12); --idea-bg:rgba(167,139,250,.14); --idea:#c4b5fd;
     --code:#172033; --mark:#713f12; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.45);
     --hover:#1b2536; --elev:0 1px 2px rgba(0,0,0,.35);
@@ -30,7 +30,7 @@
 }
 :root[data-theme="dark"]{
   --bg:#0b0f17; --panel:#111827; --ink:#e5e7eb; --ink2:#a1a1aa; --ink3:#7c8594;
-    --line:#1f2937; --accent:#818cf8; --accent2:#38bdf8; --ok:#34d399; --warn:#fbbf24; --bad:#f87171;
+    --line:#1f2937; --accent:#818cf8; --on-accent:#0b1020; --accent2:#38bdf8; --ok:#34d399; --warn:#fbbf24; --bad:#f87171;
     --ok-bg:rgba(52,211,153,.12); --warn-bg:rgba(251,191,36,.12); --bad-bg:rgba(248,113,113,.12); --info-bg:rgba(56,189,248,.12); --idea-bg:rgba(167,139,250,.14); --idea:#c4b5fd;
     --code:#172033; --mark:#713f12; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.45);
     --hover:#1b2536; --elev:0 1px 2px rgba(0,0,0,.35);
@@ -57,8 +57,14 @@ main{padding-block:2rem 6rem;min-width:0}
   font:inherit;font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;border-radius:14px;
   border:1px solid color-mix(in srgb,var(--line) 85%,transparent);background:color-mix(in srgb,var(--panel) 76%,transparent);
   -webkit-backdrop-filter:blur(12px) saturate(1.4);backdrop-filter:blur(12px) saturate(1.4);
-  box-shadow:0 8px 28px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);transition:transform .15s,box-shadow .15s,color .15s}
+  box-shadow:0 8px 28px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);transition:transform .2s,box-shadow .15s,color .15s,opacity .2s}
 .toc-toggle .ico{width:17px;height:17px}
+@media (max-width:640px){
+  .toc-toggle{width:44px;height:44px;padding:0;justify-content:center;border-radius:50%}
+  .toc-toggle span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}   /* still the accessible name */
+  .toc-toggle.tuck{transform:translateY(calc(100% + 24px));opacity:0;pointer-events:none}
+  main{padding-bottom:72px}   /* the last lines can scroll clear of the button */
+}
 .toc-toggle:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(0,0,0,.16),0 1px 2px rgba(0,0,0,.06)}
 .toc-toggle:focus-visible{outline:none;box-shadow:0 0 0 3px var(--ring),0 8px 28px rgba(0,0,0,.12)}
 .toc-toggle[aria-expanded="true"]{color:var(--accent)}
@@ -167,16 +173,16 @@ table[data-sortable] th[aria-sort="descending"]::after{content:" ▼"}
 .btn:focus-visible{outline:none;box-shadow:0 0 0 3px var(--ring)}
 .btn.icon{width:32px;padding:0}
 .btn[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);border-color:color-mix(in srgb,var(--accent) 38%,var(--line))}
-.btn.primary{color:#fff;border-color:transparent;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 86%,#fff),var(--accent));
+.btn.primary{color:var(--on-accent);border-color:transparent;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 86%,#fff),var(--accent));
   box-shadow:0 1px 2px rgba(0,0,0,.12),0 4px 12px color-mix(in srgb,var(--accent) 28%,transparent)}
-.btn.primary:hover{color:#fff;filter:brightness(1.06)}
+.btn.primary:hover{color:var(--on-accent);filter:brightness(1.06)}
 
 /* ---------- player + stepper (built by Docs.player / Docs.stepper for doc-steps, doc-seq, doc-flow) ---------- */
 .dk-player{display:flex;flex-wrap:wrap;align-items:center;gap:.7rem .85rem;padding:.6rem .85rem;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink3)}
 .dk-transport{display:inline-flex;align-items:center;gap:.25rem;padding:3px;border-radius:14px;background:var(--code)}
 .dk-transport .btn.icon{background:transparent;border-color:transparent;box-shadow:none;border-radius:10px}
 .dk-transport .btn.icon:hover{background:var(--panel);box-shadow:var(--elev)}
-.dk-play{width:38px;height:38px;padding:0;border:0;border-radius:12px;color:#fff;cursor:pointer;display:inline-grid;place-items:center;
+.dk-play{width:38px;height:38px;padding:0;border:0;border-radius:12px;color:var(--on-accent);cursor:pointer;display:inline-grid;place-items:center;
   background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 84%,#fff),var(--accent));
   box-shadow:0 2px 8px color-mix(in srgb,var(--accent) 38%,transparent);transition:filter .15s,transform .08s,box-shadow .2s}
 .dk-play .ico{width:16px;height:16px;fill:currentColor;stroke-width:1.5}
@@ -207,7 +213,7 @@ table[data-sortable] th[aria-sort="descending"]::after{content:" ▼"}
 .dk-step.done b span{display:none}
 .dk-step.done b .ico{display:block}
 .dk-step.on{color:var(--ink);background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 22%,transparent)}
-.dk-step.on b{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent)}
+.dk-step.on b{background:var(--accent);border-color:var(--accent);color:var(--on-accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent)}
 .dk-step.on em{font-weight:600}
 .dk-sep{flex:0 0 1.5rem;height:2px;margin:0 .1rem;border-radius:2px;background:var(--line);transition:background .3s}
 .dk-sep.done{background:linear-gradient(90deg,var(--accent2),var(--accent))}
@@ -248,8 +254,12 @@ details>.inner{padding:0 .9rem .8rem}
 figure{margin:1.2rem 0}
 figure .diagram{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:1rem;overflow-x:auto;text-align:center}
 figcaption{font-size:12.5px;color:var(--ink3);margin-top:.35rem}
-pre.mermaid{background:none;border:0;font-family:var(--sans)}
-pre.mermaid svg .node rect,pre.mermaid svg rect.actor{rx:10px;ry:10px}
+/* Every diagram and content image shows its own edges, so it never blends into the text around it. A container that
+   already draws a frame (a figure's .diagram, a doc-compare column, doc-zoom, doc-figure) keeps the only one. */
+pre.mermaid{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:1rem;font-family:var(--sans)}
+:is(figure .diagram, .dc-col, doc-zoom, .df-box) pre.mermaid{background:none;border:0;border-radius:0;padding:0}
+main :is(p, figure) > img{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+:is(pre.mermaid, .dk-viewstage) svg :is(.node rect, rect.actor){rx:10px;ry:10px}
 
 /* ---------- wide table: <div class="wide" data-freeze="2"><table> — doc.js adds the scroll box + toolbar ---------- */
 .wide{position:relative;margin:1rem 0;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
@@ -351,17 +361,16 @@ pre.mermaid svg .node rect,pre.mermaid svg rect.actor{rx:10px;ry:10px}
 
 /* ---------- placeholders: a component still waiting for its library (it loads near the viewport) holds about its
    final height, so the page does not jump when it draws; a Mermaid block hides its source until it is a diagram ---------- */
-:is(doc-chart, doc-vega, doc-graph, doc-map, doc-seq, doc-openapi, doc-cast, doc-diff):not(:defined),
+:is(doc-chart, doc-vega, doc-graph, doc-map, doc-seq, doc-cast, doc-diff):not(:defined),
 pre.mermaid:not([data-processed]){display:block;border-radius:var(--radius);color:transparent;
   background:linear-gradient(100deg,var(--code) 40%,var(--panel) 50%,var(--code) 60%) 0 0/300% 100%;animation:docs-wait 1.6s linear infinite}
 pre.mermaid:not([data-processed]){min-height:160px;overflow:hidden}
 doc-chart:not(:defined),doc-vega:not(:defined){min-height:300px}
 doc-graph:not(:defined){min-height:420px}
 doc-map:not(:defined){min-height:440px}
-doc-openapi:not(:defined){min-height:560px}
 :is(doc-seq, doc-cast, doc-diff):not(:defined){min-height:220px}
 @keyframes docs-wait{to{background-position:-150% 0}}
-@media (prefers-reduced-motion:reduce){:is(doc-chart, doc-vega, doc-graph, doc-map, doc-seq, doc-openapi, doc-cast, doc-diff):not(:defined),pre.mermaid:not([data-processed]){animation:none}}
+@media (prefers-reduced-motion:reduce){:is(doc-chart, doc-vega, doc-graph, doc-map, doc-seq, doc-cast, doc-diff):not(:defined),pre.mermaid:not([data-processed]){animation:none}}
 @media print{pre.mermaid:not([data-processed]){color:inherit;background:none}}
 
 /* ---------- runtime helpers shared by components ---------- */
@@ -374,7 +383,7 @@ svg .doc-hl > :is(rect,path,line,circle,ellipse,polygon){stroke:var(--accent)!im
 @media (prefers-reduced-motion:no-preference){
   html.docs-js [data-reveal]{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
   html.docs-js [data-reveal].revealed{opacity:1;transform:none}
-  pre.mermaid.flow .flowchart-link{stroke-dasharray:8 6;animation:doc-dash 1.1s linear infinite}
+  :is(pre.mermaid, .dk-viewstage).flow .flowchart-link{stroke-dasharray:8 6;animation:doc-dash 1.1s linear infinite}
 }
 @keyframes doc-dash{to{stroke-dashoffset:-28}}
 doc-figure:not(:defined)>doc-pin{display:none}
@@ -397,24 +406,29 @@ dl.gloss dd{margin:0;color:var(--ink2)}
 
 @media (prefers-reduced-motion:reduce){.dk-play.on{animation:none}.dk-track i,.dk-step b,.dk-sep{transition:none}}
 
-/* ---------- diagram zoom: + / − / ↺ in the top right corner of every rendered Mermaid diagram's frame, on a strip of
-   its own so it never covers the drawing (doc.js addDiagramZoom) ---------- */
 pre.mermaid{position:relative}
-/* A diagram taller than the screen first fits it (aspect kept); zooming shows the detail. */
+/* A diagram taller than the screen first fits it (aspect kept); the full-screen viewer shows the detail. */
 pre.mermaid > svg{max-height:85vh}
 pre.mermaid[data-full-height] > svg{max-height:none}
-pre.mermaid.dk-zoomed{overflow:hidden}
-pre.mermaid.dk-zoomed > svg{cursor:grab}
-pre.mermaid.dk-zoomed > svg:active{cursor:grabbing}
-:is(.diagram, pre.mermaid):has(> .dk-zoombar){padding-top:2.9rem}
-.dk-zoombar{position:absolute;top:.35rem;right:.35rem;z-index:2;display:flex;align-items:center;gap:.3rem;padding:.2rem .35rem;border:1px solid var(--line);
-  max-width:calc(100% - .7rem);box-sizing:border-box;
-  border-radius:9px;background:var(--panel);box-shadow:0 1px 3px rgb(0 0 0 / .1);font:13px var(--sans)}
-.dk-zoombar .btn.icon{width:1.75rem;height:1.75rem;padding:0;color:var(--accent)}
-.dk-zoombar .btn[hidden]{display:none}
-/* 12rem spreads 100-300% over the track (input.dk-zoomrange outranks the generic range width); in a narrow frame the slider gives up width so the bar never overflows. */
-.dk-zoombar input.dk-zoomrange{flex:0 1 12rem;width:12rem;min-width:4rem}
-.dk-zoombar > :not(.dk-zoomrange){flex:none}
-@media (max-width:480px){.dk-zoombar input.dk-zoomrange{flex-basis:7rem;width:7rem}}
-.dk-zoompct{min-width:2.9rem;text-align:right;font:600 12px var(--mono);color:var(--ink2);font-variant-numeric:tabular-nums}
-@media print{.dk-zoombar{display:none}}
+/* ---------- diagram viewer: the diagram stays clean in the page; a click opens it in a lightbox — a box sized to the
+   diagram in the middle of the screen, over a dark veil (doc.js addDiagramZoom / openDiagram) ---------- */
+pre.mermaid.dk-viewable{cursor:zoom-in}
+.dk-viewer{border:1px solid var(--line);border-radius:12px;padding:0;margin:auto;max-width:94vw;max-height:94dvh;overflow:hidden;
+  background:var(--panel);color:var(--ink);box-shadow:0 24px 64px rgb(0 0 0 / .35)}
+.dk-viewer[open]{display:flex;flex-direction:column}
+.dk-viewer::backdrop{background:rgb(0 0 0 / .7);animation:dk-veil .22s ease-out}
+.dk-viewer.closing::backdrop{opacity:0;transition:opacity .18s}
+@keyframes dk-veil{from{opacity:0}}
+@media (prefers-reduced-motion: reduce){.dk-viewer::backdrop{animation:none}}
+.dk-viewbar{flex:none;display:flex;align-items:center;gap:.3rem;padding:.4rem .6rem;border-bottom:1px solid var(--line)}
+.dk-viewbar .btn.icon{width:2rem;height:2rem;padding:0;color:var(--accent)}
+.dk-viewbar [data-a="close"]{margin-left:auto;color:var(--ink2)}
+.dk-zoompct{all:unset;box-sizing:border-box;min-width:3.2rem;padding:.2rem .3rem;border-radius:6px;text-align:center;cursor:pointer;
+  font:600 12px var(--mono);color:var(--ink2);font-variant-numeric:tabular-nums}
+.dk-zoompct:hover,.dk-zoompct:focus-visible{color:var(--accent);background:color-mix(in srgb, var(--accent) 10%, transparent)}
+.dk-viewhint{margin-left:.6rem;font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dk-viewer.narrow .dk-viewhint{display:none}
+.dk-viewstage{flex:1;min-height:0;overflow:hidden;padding:1rem;background:var(--bg);touch-action:none}
+.dk-viewstage > svg{display:block;width:100%;height:100%}
+@media print{.dk-viewer{display:none}}
+

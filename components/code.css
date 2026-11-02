@@ -8,6 +8,6 @@ doc-code{display:block;margin:1rem 0;border:1px solid var(--line);border-radius:
 .dcode-gutter span.on{color:var(--accent);font-weight:700}
 .dcode-scroll{position:relative;flex:1;min-width:0;overflow-x:auto}
 .dcode-bands{position:absolute;left:0;right:0;top:.7rem;pointer-events:none}
-.dcode-bands i{position:absolute;left:0;right:0;height:1.6em;background:color-mix(in srgb,var(--mark) 75%,transparent)}
+.dcode-bands i{position:absolute;left:0;right:0;height:1.6em;background:color-mix(in srgb,var(--mark) 35%,transparent);box-shadow:inset 3px 0 var(--warn)}
 doc-code pre{position:relative;margin:0;padding:.7rem .9rem;border:0;border-radius:0;background:none;font:inherit;line-height:inherit;overflow:visible}
 doc-code pre code,doc-code pre code.hljs{display:block;padding:0;border:0;background:none;white-space:pre;font:inherit}

@@ -42,14 +42,17 @@
       this.native = [dev.offsetWidth, dev.offsetHeight];
       if (!this.native[0]) return Docs.fail(this, `doc-device: devices.css has no model "${model}"`);
       this.fit();
-      new ResizeObserver(() => this.fit()).observe(this);
+      // Watch the parent, not this element: inside a flex row this element's own width follows the frame it holds,
+      // so measuring itself would shrink the frame a little more on every pass.
+      new ResizeObserver(() => this.fit()).observe(this.parentElement || this);
     }
 
     // scale the fixed-size frame to the requested width or the available column, never up
     fit() {
       const [w, h] = this.native;
       const want = parseFloat(this.getAttribute('width')) || w;
-      const k = Math.min(1, want / w, (this.clientWidth || w) / w);
+      const room = this.parentElement?.clientWidth || this.clientWidth || w;
+      const k = Math.min(1, want / w, room / w);
       const box = this.querySelector('.ddev-fit');
       box.style.width = `${w * k}px`;
       box.style.height = `${h * k}px`;

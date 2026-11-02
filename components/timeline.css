@@ -17,4 +17,23 @@ doc-timeline[horizontal]{display:flex;gap:1rem;overflow-x:auto;padding:1.6rem 0 
 doc-timeline[horizontal]::before{left:0;right:0;top:2.02rem;bottom:auto;width:auto;height:2px}
 doc-timeline[horizontal] .dtl-event{flex:0 0 min(16rem,80%);padding:1.2rem 0 0}
 doc-timeline[horizontal] .dtl-event::before{left:.45rem;top:0}
-@media print{.dtl-event.dtl-wait{opacity:1;transform:none}}
+/* Compact: one line per event, details open in place. */
+doc-timeline.dtl-compact .dtl-event{padding:0 0 .1rem}
+doc-timeline.dtl-compact .dtl-event::before{top:.66rem}
+.dtl-compact .dtl-head{flex-wrap:nowrap;gap:.6rem;padding:.3rem .5rem;margin-left:-.5rem;border-radius:8px}
+.dtl-compact button.dtl-head{all:unset;box-sizing:border-box;display:flex;align-items:baseline;gap:.6rem;width:calc(100% + .5rem);
+  padding:.3rem .5rem;margin-left:-.5rem;border-radius:8px;cursor:pointer}
+.dtl-compact button.dtl-head:hover{background:color-mix(in srgb, var(--accent) 8%, transparent)}
+.dtl-compact button.dtl-head:focus-visible{outline:2px solid var(--accent2);outline-offset:1px}
+.dtl-compact .dtl-time{flex:none;min-width:4.2rem}
+.dtl-compact .dtl-title{flex:0 1 auto;min-width:0;font-weight:600}
+.dtl-compact button.dtl-head::after{content:"";flex:none;align-self:center;width:.42rem;height:.42rem;margin:0 .2rem 0 .15rem;
+  border-right:2px solid var(--ink3);border-bottom:2px solid var(--ink3);transform:translateY(-25%) rotate(45deg);transition:transform .15s}
+.dtl-compact .dtl-open > button.dtl-head::after{transform:translateY(15%) rotate(-135deg)}
+.dtl-compact .dtl-body{padding:.1rem .5rem .7rem calc(4.2rem + .6rem)}
+@media (max-width:560px){.dtl-compact .dtl-time{min-width:3.4rem}.dtl-compact .dtl-body{padding-left:calc(3.4rem + .6rem)}}
+/* expanded uses the same time column, so both kinds line their titles up */
+doc-timeline:not([horizontal]):not(.dtl-compact) .dtl-head{flex-wrap:nowrap;gap:.6rem}
+doc-timeline:not([horizontal]):not(.dtl-compact) .dtl-time{flex:none;min-width:4.2rem}
+doc-timeline:not([horizontal]):not(.dtl-compact) .dtl-title{min-width:0}
+@media print{.dtl-event.dtl-wait{opacity:1;transform:none}.dtl-compact .dtl-body[hidden]{display:block}}
