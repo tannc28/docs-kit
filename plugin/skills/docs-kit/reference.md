@@ -1,6 +1,6 @@
 # docs-kit component reference
 
-Release v0.6.0. Generated from the component sources.
+Release v0.7.0. Generated from the component sources.
 
 ### doc-arrow
 

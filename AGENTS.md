@@ -14,7 +14,7 @@ Copy it exactly — the URL names a release that never changes:
 <html lang="en">
 <meta charset="utf-8">
 <title>Page title</title>
-<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.6.0/doc.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.7.0/doc.js"></script>
 
 <script type="text/markdown">
 # Page title
@@ -124,6 +124,11 @@ HTML and `<doc-*>` tags work inside the Markdown block. The attribute reference 
 - Callout: `<div class="callout why|idea|data|ok|warn|risk"><div class="ct">Label</div>…</div>`
 - Badge: `<span class="badge high|med|low|info|idea">…</span>`
 - Cards: `<div class="grid"><div class="card"><h4>…</h4><p>…</p></div></div>`
+- Magazine side-by-side layout: `<div class="split"><div>…prose…</div><figure>…</figure></div>` (add `.flip` to put the media on the left; stacks on narrow screens)
+- Chapter opener: `<div class="ch-lead"><div class="kicker">…</div><p class="big">…</p></div>`
+- Worked story / example card: `<div class="story"><div class="st">Example</div><div class="story-steps"><div><b>1 · Scene</b>…</div><div><b>2 · Mechanism</b>…</div></div></div>`
+- Chapter takeaway strip: `<div class="takeaway"><div><b>Anchor image</b>…</div><div><b>Rule</b>…</div><div><b>Action</b>…</div></div>`
+- Themes: `data-theme="light"`, `"sepia"` (warm paper), or `"dark"` on `<html>`
 - Collapsible: `<details><summary>…</summary><div class="inner">…</div></details>`
 - Muted and small text: `.muted`, `.small`; a page intro paragraph right after the title becomes the lede
 - Questions for the reader: `.decision` blocks and `ul.checklist`; `[data-action="export"]` copies the answers

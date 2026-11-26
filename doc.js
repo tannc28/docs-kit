@@ -266,7 +266,9 @@
   }
 
   function toggleTheme() {
-    const next = currentTheme() === 'dark' ? 'light' : 'dark';
+    const order = ['light', 'sepia', 'dark'];
+    const cur = currentTheme();
+    const next = order[(order.indexOf(cur) + 1) % order.length];
     document.documentElement.dataset.theme = next;
     try { localStorage.setItem('docs:theme', next); } catch {}
     toast(t('theme', { t: next }));
