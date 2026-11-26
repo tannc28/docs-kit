@@ -1,0 +1,39 @@
+doc-peek{
+  display:inline-flex;align-items:baseline;gap:.25rem;
+  padding:.05rem .42rem .08rem;margin:0 .06rem;border-radius:6px;
+  border:1px solid color-mix(in srgb,var(--accent) 36%,var(--line));
+  background:color-mix(in srgb,var(--accent) 9%,transparent);
+  color:var(--accent);font-weight:600;cursor:pointer;line-height:1.45;
+  transition:background .14s,color .14s,border-color .14s;
+}
+doc-peek::after{content:"ⓘ";font-size:.78em;opacity:.75}
+doc-peek:hover,doc-peek:focus-visible{
+  background:var(--accent);color:var(--bg);border-color:var(--accent);outline:none;
+}
+.dpeek-dlg{
+  width:min(560px,calc(100vw - 24px));max-height:84dvh;overflow-y:auto;
+  margin:auto;padding:1.15rem 1.3rem;border-radius:14px;
+  border:1px solid var(--line);border-top:4px solid var(--accent);
+  background:var(--panel);color:var(--ink);box-shadow:0 24px 64px rgb(0 0 0 / .32);
+  font-family:var(--sans);line-height:1.68;
+}
+.dpeek-dlg::backdrop{background:rgb(0 0 0 / .46);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.dpeek-head{display:flex;align-items:flex-start;justify-content:space-between;gap:.8rem;margin-bottom:.6rem}
+.dpeek-kicker{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+.dpeek-title{margin:.15rem 0 0;font-size:1.08rem;font-weight:720;line-height:1.35;color:var(--ink)}
+.dpeek-x{
+  flex:0 0 auto;border:1px solid var(--line);background:var(--bg);color:var(--ink2);
+  border-radius:8px;padding:.22rem .55rem;cursor:pointer;font:600 13px var(--sans);
+}
+.dpeek-x:hover{border-color:var(--accent);color:var(--accent)}
+.dpeek-body{font-size:.95rem;color:var(--ink)}
+.dpeek-body p{margin:.55rem 0}
+.dpeek-point{
+  margin:.9rem 0 .4rem;padding:.65rem .85rem;border-radius:9px;
+  background:var(--ok-bg);color:var(--ok);font-size:.89rem;line-height:1.55;
+}
+.dpeek-src{
+  margin-top:.75rem;padding-top:.6rem;border-top:1px solid var(--line);
+  font-size:12px;color:var(--ink3);line-height:1.45;
+}
+@media print{doc-peek::after,.dpeek-dlg{display:none}}

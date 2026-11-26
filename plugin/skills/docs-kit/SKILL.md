@@ -19,7 +19,7 @@ Copy it exactly — the URL names a release that never changes:
 <html lang="en">
 <meta charset="utf-8">
 <title>Page title</title>
-<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.7.0/doc.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tannc26/docs-kit@0.8.0/doc.js"></script>
 
 <script type="text/markdown">
 # Page title
@@ -83,6 +83,7 @@ Inside Markdown, most tools are a fenced block: the word after the backticks pic
 | A phone, tablet, laptop or browser screen | `<doc-device model="iphone-14-pro">`, `model="browser"` | |
 | Icons | `<doc-icon name="database">` (any Lucide icon) | |
 | A term with its definition on hover | `<doc-term def="…">term</doc-term>`, `<doc-glossary>` lists them all | |
+| A bite-sized deep-dive card (story, study or mechanism) opened in place on click | `<doc-peek key="id">phrase</doc-peek>` + `<script type="application/json" id="doc-peeks">` | same |
 | Hand-drawn emphasis on a phrase | `<doc-mark type="circle">…</doc-mark>` | |
 
 HTML and `<doc-*>` tags work inside the Markdown block. The attribute reference of every component is the
@@ -133,6 +134,8 @@ HTML and `<doc-*>` tags work inside the Markdown block. The attribute reference 
 - Chapter opener: `<div class="ch-lead"><div class="kicker">…</div><p class="big">…</p></div>`
 - Worked story / example card: `<div class="story"><div class="st">Example</div><div class="story-steps"><div><b>1 · Scene</b>…</div><div><b>2 · Mechanism</b>…</div></div></div>`
 - Chapter takeaway strip: `<div class="takeaway"><div><b>Anchor image</b>…</div><div><b>Rule</b>…</div><div><b>Action</b>…</div></div>`
+- Compact inline stat strip (replaces small 3-bar charts): `<div class="stat-strip"><div><div class="v ok">61%</div><div class="l">Label</div></div>…</div>`
+- Slim classical/cross-disciplinary note: `<div class="wisdom"><div class="wk">Label</div><p>…</p></div>`
 - Themes: `data-theme="light"`, `"sepia"` (warm paper), or `"dark"` on `<html>`
 - Collapsible: `<details><summary>…</summary><div class="inner">…</div></details>`
 - Muted and small text: `.muted`, `.small`; a page intro paragraph right after the title becomes the lede

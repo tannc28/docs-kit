@@ -608,7 +608,7 @@
     'doc-math': 'math', 'doc-zoom': 'zoom', 'doc-sketch': 'sketch', 'doc-arrow': 'arrow',
     'doc-note': 'note', 'doc-flow': 'flow', 'doc-map': 'map', 'doc-device': 'device', 'doc-scrolly': 'scrolly', 'doc-mark': 'mark',
     'doc-table': 'table', 'doc-vega': 'vega', 'doc-cast': 'cast', 'doc-cron': 'cron', 'doc-tour': 'tour',
-    'doc-drawer': 'drawer',
+    'doc-drawer': 'drawer', 'doc-peek': 'peek',
   };
   // Libraries a component needs, started together with the component's own file.
   const NEEDS = {
@@ -625,7 +625,7 @@
   };
   // Structural and light components load at once: the page layout depends on them and they carry no big library.
   const AT_ONCE = new Set(['doc-tabs', 'doc-steps', 'doc-scrolly', 'doc-note', 'doc-arrow', 'doc-term', 'doc-glossary', 'doc-tour',
-    'doc-flow', 'doc-mark', 'doc-compare', 'doc-figure', 'doc-timeline', 'doc-json', 'doc-table', 'doc-cron', 'doc-drawer']);
+    'doc-flow', 'doc-mark', 'doc-compare', 'doc-figure', 'doc-timeline', 'doc-json', 'doc-table', 'doc-cron', 'doc-drawer', 'doc-peek']);
   const startedFiles = new Map(), startedLibs = new Map();
   function loadComponent(el) {
     const tag = el.tagName.toLowerCase();

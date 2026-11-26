@@ -1,6 +1,6 @@
 # docs-kit component reference
 
-Release v0.7.0. Generated from the component sources.
+Release v0.8.0. Generated from the component sources.
 
 ### doc-arrow
 
@@ -254,6 +254,20 @@ Default look is clean. `shape` opts into a hand-drawn mark (sketchy ring, box or
 Put the tag anywhere; it moves itself into the target.
 Without `for`, it annotates its previous element sibling. Numbers follow document order.
 The target gets position:relative when it is static. Several notes on one target stack their markers.
+```
+
+### doc-peek
+
+```text
+doc-peek — bite-sized inline deep-dive card (a story, experiment or mechanism) opened in place without leaving the page.
+Dictionary form — define entries once in <script type="application/json" id="doc-peeks"> and reference by key:
+  <doc-peek key="odysseus">Odysseus tied himself to the mast</doc-peek>
+  <script type="application/json" id="doc-peeks">
+    { "odysseus": { "kicker": "Classical story", "title": "Odysseus and the Sirens",
+      "body": ["Paragraph one…", "Paragraph two…"], "point": "Key takeaway…", "source": "Homer, Odyssey XII" } }
+  </script>
+Inline form — put details directly on the tag (body inside <template> or data-body):
+  <doc-peek title="…" kicker="…" point="…" source="…">trigger<template><p>…</p></template></doc-peek>
 ```
 
 ### doc-scrolly
